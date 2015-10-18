@@ -34,6 +34,10 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.TEXT);
 		
 		
+		urls.push ("assets/data/room-001a.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
 		urls.push ("assets/data/tutorial.oep");
 		types.push (lime.Assets.AssetType.TEXT);
 		
@@ -104,6 +108,10 @@ class ApplicationMain {
 		
 		urls.push ("assets/sounds/win.wav");
 		types.push (lime.Assets.AssetType.SOUND);
+		
+		
+		urls.push ("assets/music/HaxeFlixel_Tutorial_Game.mp3");
+		types.push (lime.Assets.AssetType.MUSIC);
 		
 		
 		urls.push ("assets/sounds/beep.mp3");
@@ -182,13 +190,13 @@ class ApplicationMain {
 		
 		config = {
 			
-			build: "45",
-			company: "EthanFischer",
+			build: "108",
+			company: "HaxeFlixel",
 			file: "TurnBasedRPG",
 			fps: 60,
 			name: "TurnBasedRPG",
 			orientation: "portrait",
-			packageName: "com.EthanFischer.EHGame",
+			packageName: "com.haxeflixel.tutorial",
 			version: "0.0.1",
 			windows: [
 				
