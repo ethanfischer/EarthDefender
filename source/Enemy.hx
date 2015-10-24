@@ -20,7 +20,7 @@ class Enemy extends FlxSprite
 	private var _moveDir:Float;
 	public var seesPlayer:Bool = false;
 	public var playerPos(default, null):FlxPoint;
-	private var _sndStep:FlxSound;
+	//private var _sndStep:FlxSound;
 	
 	public function new(X:Float=0, Y:Float=0, EType:Int) 
 	{
@@ -41,8 +41,8 @@ class Enemy extends FlxSprite
 		_idleTmr = 0;
 		playerPos = FlxPoint.get();
 		
-		_sndStep = FlxG.sound.load(AssetPaths.step__wav,.4);
-		_sndStep.proximity(x,y,FlxG.camera.target, FlxG.width *.6);
+		//_sndStep = FlxG.sound.load(AssetPaths.step__wav,.4);
+		//_sndStep.proximity(x,y,FlxG.camera.target, FlxG.width *.6);
 	}
 	
 	override public function update():Void 
@@ -53,8 +53,8 @@ class Enemy extends FlxSprite
 		super.update();
 		if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
 		{
-			_sndStep.setPosition(x + _halfWidth, y + height);
-			_sndStep.play();
+			//_sndStep.setPosition(x + _halfWidth, y + height);
+			//_sndStep.play();
 		}
 	}
 	
@@ -145,6 +145,6 @@ class Enemy extends FlxSprite
 	{
 		super.destroy();
 		
-		_sndStep = FlxDestroyUtil.destroy(_sndStep);
+		//_sndStep = FlxDestroyUtil.destroy(_sndStep);
 	}
 }
