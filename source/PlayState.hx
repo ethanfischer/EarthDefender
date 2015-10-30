@@ -46,10 +46,12 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
-		_map = new FlxOgmoLoader(AssetPaths.room_001a__oel);
+		_map = new FlxOgmoLoader(AssetPaths.room_002a__oel);
+		//_map = new FlxOgmoLoader(AssetPaths.room_001a__oel);
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 16, 16, "walls");
 		_mWalls.setTileProperties(1, FlxObject.NONE);
 		_mWalls.setTileProperties(2, FlxObject.ANY);
+		_mWalls.setTileProperties(3, FlxObject.NONE);
 	
 		add(_mWalls);
 		
@@ -65,7 +67,7 @@ class PlayState extends FlxState
 		
 		add(_player);
 		
-		FlxG.camera.follow(_player, FlxCamera.STYLE_TOPDOWN, 1);
+		FlxG.camera.follow(_player, FlxCamera.STYLE_NO_DEAD_ZONE, 1);
 		
 		_hud = new HUD();
 		add(_hud);
@@ -137,7 +139,7 @@ class PlayState extends FlxState
 		//{
 			//return;
 		//}
-		FlxG.log.redirectTraces = true;
+		//FlxG.log.redirectTraces = true;
 		//FlxG.overlap(_mWalls, _player, collideFunction);
 		FlxG.overlap(_player, _grpCoins, playerTouchCoin);
 		FlxG.collide(_grpEnemies, _mWalls);
@@ -149,7 +151,7 @@ class PlayState extends FlxState
 		//}
 		/*else
 		{*/
-			//if (!_combatHud.visible)
+			//if (!_combatHud.visible)walls
 			//{
 				//_health = _combatHud.playerHealth;
 				//_hud.updateHUD(_health, _money);
@@ -232,4 +234,10 @@ class PlayState extends FlxState
 		}
 	}
 
+	private function shadowEnter(E:Enemy, S:FlxTilemap):Void
+	{
+		//freeze 
+		E.flicker;
+		
+	}
 }

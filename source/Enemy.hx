@@ -25,19 +25,17 @@ class Enemy extends FlxSprite
 	public function new(X:Float=0, Y:Float=0, EType:Int) 
 	{
 		super(X, Y);
-		etype = EType;
+		etype = EType; //???
 		loadGraphic("assets/images/enemy-" + Std.string(etype) + ".png", true, 16, 16);
-		setFacingFlip(FlxObject.LEFT, false, false);
-		setFacingFlip(FlxObject.RIGHT, true, false);
-		animation.add("d", [0, 1, 0, 2], 6, false);
-		animation.add("lr", [3, 4, 3, 5], 6, false);
-		animation.add("u", [6, 7, 6, 8], 6, false);
-		drag.x = drag.y = 10;
-		width = 8;
-		height = 14;
-		offset.x = 4;
-		offset.y = 2;
-		_brain = new FSM(idle);
+		//setFacingFlip(FlxObject.LEFT, false, false);
+		//setFacingFlip(FlxObject.RIGHT, true, false);
+		//animation.add("d", [0, 1, 0, 2], 6, false);
+		//animation.add("lr", [3, 4, 3, 5], 6, false);
+		//animation.add("u", [6, 7, 6, 8], 6, false);
+		//drag.x = drag.y = 10;
+		width = 16;
+		height = 16;
+		_brain = new FSM(chase);
 		_idleTmr = 0;
 		playerPos = FlxPoint.get();
 		
@@ -47,52 +45,70 @@ class Enemy extends FlxSprite
 	
 	override public function update():Void 
 	{
-		if (isFlickering())
-			return;
+		//if (isFlickering())
+			//return;
 		_brain.update();
 		super.update();
-		if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
-		{
-			//_sndStep.setPosition(x + _halfWidth, y + height);
-			//_sndStep.play();
-		}
+	
+		//if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
+		//{
+			////_sndStep.setPosition(x + _halfWidth, y + height);
+			////_sndStep.play();
+		//}
 	}
 	
 	public function idle():Void
 	{
+		trace("idle");
 		if (seesPlayer)
+		{
+			//TODO hide
+			_brain.activeState = idle;
+			velocity.x = velocity.y = 0;
+		}
+		else
 		{
 			_brain.activeState = chase;
 		}
-		else if (_idleTmr <= 0)
-		{
-			if (FlxRandom.chanceRoll(1))
-			{
-				_moveDir = -1;
-				velocity.x = velocity.y = 0;
-			}
-			else
-			{
-				_moveDir = FlxRandom.intRanged(0, 8) * 45;
-				FlxAngle.rotatePoint(speed * .5, 0, 0, 0, _moveDir, velocity);
-				
-			}
-			_idleTmr = FlxRandom.intRanged(1, 4);			
-		}
-		else
-			_idleTmr -= FlxG.elapsed;
+		
+		//else if (_idleTmr <= 0)
+		//{
+			//if (FlxRandom.chanceRoll(1))
+			//{
+				//_moveDir = -1;
+				//velocity.x = velocity.y = 0;
+			//}
+			//else
+			//{
+				//_moveDir = FlxRandom.intRanged(0, 8) * 45;
+				//FlxAngle.rotatePoint(speed * .5, 0, 0, 0, _moveDir, velocity);
+				//
+			//}
+			//_idleTmr = FlxRandom.intRanged(1, 4);			
+		//}
+		//else
+			//_idleTmr -= FlxG.elapsed;
 		
 	}
 	
 	public function chase():Void
 	{
-		if (!seesPlayer)
+		trace("chase");
+		if (seesPlayer)
 		{
+			//TODO hide
 			_brain.activeState = idle;
 		}
 		else
 		{
+		//if (!seesPlayer)
+		//{
+			//_brain.activeState = idle;
+		//}
+		//else
+		//{
 			FlxVelocity.moveTowardsPoint(this, playerPos, Std.int(speed));
+		//}
 		}
 	}
 	

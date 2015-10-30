@@ -27,6 +27,11 @@ enum MoveDirection
 	DOWNHOLD;
 	LEFTHOLD;
 	RIGHTHOLD;
+	
+	UPRIGHTHOLD;
+	UPLEFTHOLD;
+	DOWNRIGHTHOLD;
+	DOWNLEFTHOLD;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //																											//
@@ -57,7 +62,7 @@ class Player extends FlxSprite
 	 * modulo-operator to check whether the next block has been reached.
 	 */
 	//HOlD_MOVEMENT should only kick in after you've help the key for a given amount of time
-	private static var HOLD_MOVEMENT_THRESHOLD:Float = 0.04;
+	private static var HOLD_MOVEMENT_THRESHOLD:Float = 0.06;
 	private var HOLD_DURATION:Float = 0; //
 	private static inline var HOLD_MOVEMENT_SPEED:Int = 4;
 	private static inline var TAP_MOVEMENT_SPEED:Int = 8;
@@ -66,10 +71,17 @@ class Player extends FlxSprite
 	private var _downTap:Bool = false;
 	private var _leftTap:Bool = false;
 	private var _rightTap:Bool = false;
+	
 	private var _upHold:Bool = false;
 	private var _downHold:Bool = false;
 	private var _leftHold:Bool = false;
 	private var _rightHold:Bool = false;
+	
+	private var _upRightHold:Bool = false;
+	private var _upLeftHold:Bool = false;
+	private var _downRightHold:Bool = false;
+	private var _downLeftHold:Bool = false;
+	
 	
 	private var _mWalls:FlxTilemap;
 	
@@ -118,17 +130,18 @@ class Player extends FlxSprite
 		_downTap = FlxG.keys.anyJustReleased(["DOWN", "S"]);
 		_leftTap = FlxG.keys.anyJustReleased(["LEFT", "A"]);
 		_rightTap = FlxG.keys.anyJustReleased(["RIGHT", "D"]);
+		
 		_upHold = FlxG.keys.anyPressed(["UP", "W"]);
 		_downHold = FlxG.keys.anyPressed(["DOWN", "S"]);
 		_leftHold = FlxG.keys.anyPressed(["LEFT", "A"]);
 		_rightHold = FlxG.keys.anyPressed(["RIGHT", "D"]);
 		
+		
+		
 		//keep track of how long player holds buttons
 		if (_upHold || _downHold || _leftHold || _rightHold)
 		{
 			HOLD_DURATION += FlxG.elapsed;
-			
-			
 			//FlxG.log.redirectTraces = true;
 			//trace("HOLD DURATION: " + HOLD_DURATION);
 		
@@ -174,8 +187,15 @@ class Player extends FlxSprite
 			
 			if (HOLD_DURATION > HOLD_MOVEMENT_THRESHOLD)
 			{
-				if(_downHold) moveTo(MoveDirection.DOWNHOLD);
-				else if (_upHold) moveTo(MoveDirection.UPHOLD);
+				/*diagonal*/
+				if (_upHold && _rightHold) moveTo(MoveDirection.UPRIGHTHOLD);
+				else if (_upHold && _leftHold) moveTo(MoveDirection.UPLEFTHOLD);
+				else if (_downHold && _rightHold) moveTo(MoveDirection.DOWNRIGHTHOLD);
+				else if (_downHold && _leftHold) moveTo(MoveDirection.DOWNLEFTHOLD);
+				
+				/*cardinal*/
+				else if(_upHold) moveTo(MoveDirection.UPHOLD);
+				else if (_downHold) moveTo(MoveDirection.DOWNHOLD);
 				else if (_leftHold) moveTo(MoveDirection.LEFTHOLD);
 				else if (_rightHold) moveTo(MoveDirection.RIGHTHOLD);
 			}
@@ -201,16 +221,12 @@ class Player extends FlxSprite
 					{
 						case UPTAP:
 							y -= TAP_MOVEMENT_SPEED;
-							//moveToNextTile = false;
 						case DOWNTAP:
 							y += TAP_MOVEMENT_SPEED;
-							//moveToNextTile = false;
 						case LEFTTAP:
 							x -= TAP_MOVEMENT_SPEED;
-							//moveToNextTile = false;
 						case RIGHTTAP:
 							x += TAP_MOVEMENT_SPEED;
-							//moveToNextTile = false;
 						case UPHOLD:
 							y -= HOLD_MOVEMENT_SPEED;
 						case DOWNHOLD:
@@ -219,6 +235,20 @@ class Player extends FlxSprite
 							x -= HOLD_MOVEMENT_SPEED;
 						case RIGHTHOLD:
 							x += HOLD_MOVEMENT_SPEED;	
+							
+						/*diagonal*/	
+						case UPRIGHTHOLD:
+							y -= HOLD_MOVEMENT_SPEED;
+							x += HOLD_MOVEMENT_SPEED;
+						case UPLEFTHOLD:
+							y -= HOLD_MOVEMENT_SPEED;
+							x -= HOLD_MOVEMENT_SPEED;
+						case DOWNRIGHTHOLD:
+							y += HOLD_MOVEMENT_SPEED;
+							x += HOLD_MOVEMENT_SPEED;
+						case DOWNLEFTHOLD:
+							y += HOLD_MOVEMENT_SPEED;
+							x -= HOLD_MOVEMENT_SPEED;	
 					}
 				}
 				
@@ -246,8 +276,11 @@ class Player extends FlxSprite
 		if (!moveToNextTile)
 		{
 			var tile:Int;
+			
 			/*Check next tile relative to player's current tile and movement direction. If solid, don't allow movement
 			get tile moving to, based on players current tile and movedirection*/
+			
+			/*cardinal*/
 			if (Direction == MoveDirection.UPTAP || Direction ==  MoveDirection.UPHOLD)
 			{
 				tile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
@@ -257,9 +290,24 @@ class Player extends FlxSprite
 			} else if (Direction == MoveDirection.LEFTTAP || Direction == MoveDirection.LEFTHOLD)
 			{
 				tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int(y/TILE_SIZE));
-			} else
+			} else if (Direction == MoveDirection.RIGHTTAP || Direction == MoveDirection.RIGHTHOLD)
 			{
 				tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int(y/TILE_SIZE));
+			} 
+			
+			/*diagonal*/
+			else if (Direction ==  MoveDirection.UPRIGHTHOLD)
+			{
+				tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
+			} else if (Direction == MoveDirection.UPLEFTHOLD)
+			{
+				tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
+			} else if (Direction == MoveDirection.DOWNRIGHTHOLD)
+			{
+				tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int((y+TILE_SIZE)/TILE_SIZE));
+			} else
+			{
+				tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int((y+TILE_SIZE)/TILE_SIZE));
 			} 
 				
 			//if tile is collidible, don't move
