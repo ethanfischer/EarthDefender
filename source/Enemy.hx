@@ -11,22 +11,33 @@ import flixel.util.FlxRandom;
 import flixel.util.FlxVelocity;
 using flixel.util.FlxSpriteUtil;
 
+
+/*
+ * TODO
+ * 
+ * -make enemies move tile-by-tile
+ * -make enemies hide in shadows when they see you
+ * -make enemies run when you get close to them
+ * 
+*/
+
 class Enemy extends FlxSprite
 {
-	public var speed:Float = 80;
+	public var speed:Float = 160;
 	public var etype(default, null):Int;
 	private var _brain:FSM;
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
 	public var seesPlayer:Bool = false;
 	public var playerPos(default, null):FlxPoint;
+	public var coinPos(default, null):FlxPoint;
 	//private var _sndStep:FlxSound;
 	
-	public function new(X:Float=0, Y:Float=0, EType:Int) 
+	public function new(X:Float=0, Y:Float=0) 
 	{
 		super(X, Y);
-		etype = EType; //???
-		loadGraphic("assets/images/enemy-" + Std.string(etype) + ".png", true, 16, 16);
+		
+		loadGraphic("assets/images/enemy-0.png", true, 16, 16);
 		//setFacingFlip(FlxObject.LEFT, false, false);
 		//setFacingFlip(FlxObject.RIGHT, true, false);
 		//animation.add("d", [0, 1, 0, 2], 6, false);
@@ -38,7 +49,7 @@ class Enemy extends FlxSprite
 		_brain = new FSM(chase);
 		_idleTmr = 0;
 		playerPos = FlxPoint.get();
-		
+		coinPos = FlxPoint.get();
 		//_sndStep = FlxG.sound.load(AssetPaths.step__wav,.4);
 		//_sndStep.proximity(x,y,FlxG.camera.target, FlxG.width *.6);
 	}
@@ -107,7 +118,7 @@ class Enemy extends FlxSprite
 		//}
 		//else
 		//{
-			FlxVelocity.moveTowardsPoint(this, playerPos, Std.int(speed));
+			FlxVelocity.moveTowardsPoint(this, coinPos, Std.int(speed));
 		//}
 		}
 	}
@@ -132,17 +143,17 @@ class Enemy extends FlxSprite
 					facing = FlxObject.DOWN;
 			}
 			
-			switch(facing)
-			{
-				case FlxObject.LEFT, FlxObject.RIGHT:
-					animation.play("lr");
-					
-				case FlxObject.UP:
-					animation.play("u");
-					
-				case FlxObject.DOWN:
-					animation.play("d");
-			}
+			//switch(facing)
+			//{
+				//case FlxObject.LEFT, FlxObject.RIGHT:
+					//animation.play("lr");
+					//
+				//case FlxObject.UP:
+					//animation.play("u");
+					//
+				//case FlxObject.DOWN:
+					//animation.play("d");
+			//}
 		}
 			
 		super.draw();

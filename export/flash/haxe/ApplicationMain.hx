@@ -46,6 +46,10 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.TEXT);
 		
 		
+		urls.push ("assets/data/room-002b.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
 		urls.push ("assets/data/tutorial.oep");
 		types.push (lime.Assets.AssetType.TEXT);
 		
@@ -198,7 +202,7 @@ class ApplicationMain {
 		
 		config = {
 			
-			build: "324",
+			build: "370",
 			company: "HaxeFlixel",
 			file: "TurnBasedRPG",
 			fps: 60,

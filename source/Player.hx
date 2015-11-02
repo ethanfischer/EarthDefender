@@ -142,7 +142,7 @@ class Player extends FlxSprite
 		if (_upHold || _downHold || _leftHold || _rightHold)
 		{
 			HOLD_DURATION += FlxG.elapsed;
-			//FlxG.log.redirectTraces = true;
+		
 			//trace("HOLD DURATION: " + HOLD_DURATION);
 		
 		}
