@@ -78,6 +78,9 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		
 		
+		
+		
+		
 		openfl.text.Font.registerFont (__ASSET__OPENFL__assets_fonts_nokiafc22_ttf);
 		openfl.text.Font.registerFont (__ASSET__OPENFL__assets_fonts_arial_ttf);
 		
@@ -95,6 +98,12 @@ class DefaultAssetLibrary extends AssetLibrary {
 		type.set ("assets/data/room-002a.oel", AssetType.TEXT);
 		className.set ("assets/data/room-002b.oel", __ASSET__assets_data_room_002b_oel);
 		type.set ("assets/data/room-002b.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c.oel", __ASSET__assets_data_room_002c_oel);
+		type.set ("assets/data/room-002c.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c1.oel", __ASSET__assets_data_room_002c1_oel);
+		type.set ("assets/data/room-002c1.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c2.oel", __ASSET__assets_data_room_002c2_oel);
+		type.set ("assets/data/room-002c2.oel", AssetType.TEXT);
 		className.set ("assets/data/tutorial.oep", __ASSET__assets_data_tutorial_oep);
 		type.set ("assets/data/tutorial.oep", AssetType.TEXT);
 		className.set ("assets/images/button.png", __ASSET__assets_images_button_png);
@@ -163,6 +172,18 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		type.set (id, AssetType.TEXT);
 		id = "assets/data/room-002b.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c1.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c2.oel";
 		path.set (id, id);
 		
 		type.set (id, AssetType.TEXT);
@@ -290,6 +311,15 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		className.set ("assets/data/room-002b.oel", __ASSET__assets_data_room_002b_oel);
 		type.set ("assets/data/room-002b.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c.oel", __ASSET__assets_data_room_002c_oel);
+		type.set ("assets/data/room-002c.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c1.oel", __ASSET__assets_data_room_002c1_oel);
+		type.set ("assets/data/room-002c1.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c2.oel", __ASSET__assets_data_room_002c2_oel);
+		type.set ("assets/data/room-002c2.oel", AssetType.TEXT);
 		
 		className.set ("assets/data/tutorial.oep", __ASSET__assets_data_tutorial_oep);
 		type.set ("assets/data/tutorial.oep", AssetType.TEXT);
@@ -1082,6 +1112,9 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:keep @:bind #if display private #end class __ASSET__assets_data_room_002_oel extends flash.utils.ByteArray { }
 @:keep @:bind #if display private #end class __ASSET__assets_data_room_002a_oel extends flash.utils.ByteArray { }
 @:keep @:bind #if display private #end class __ASSET__assets_data_room_002b_oel extends flash.utils.ByteArray { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c_oel extends flash.utils.ByteArray { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c1_oel extends flash.utils.ByteArray { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c2_oel extends flash.utils.ByteArray { }
 @:keep @:bind #if display private #end class __ASSET__assets_data_tutorial_oep extends flash.utils.ByteArray { }
 @:keep @:bind #if display private #end class __ASSET__assets_images_button_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_images_coin_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
@@ -1135,6 +1168,9 @@ class DefaultAssetLibrary extends AssetLibrary {
 
 
 
+
+
+
 @:keep #if display private #end class __ASSET__assets_fonts_nokiafc22_ttf extends lime.text.Font { public function new () { super (); name = "Nokia Cellphone FC Small"; } } 
 @:keep #if display private #end class __ASSET__assets_fonts_arial_ttf extends lime.text.Font { public function new () { super (); name = "Arial"; } } 
 
@@ -1151,6 +1187,9 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:file("assets/data/room-002.oel") #if display private #end class __ASSET__assets_data_room_002_oel extends lime.utils.ByteArray {}
 @:file("assets/data/room-002a.oel") #if display private #end class __ASSET__assets_data_room_002a_oel extends lime.utils.ByteArray {}
 @:file("assets/data/room-002b.oel") #if display private #end class __ASSET__assets_data_room_002b_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c.oel") #if display private #end class __ASSET__assets_data_room_002c_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c1.oel") #if display private #end class __ASSET__assets_data_room_002c1_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c2.oel") #if display private #end class __ASSET__assets_data_room_002c2_oel extends lime.utils.ByteArray {}
 @:file("assets/data/tutorial.oep") #if display private #end class __ASSET__assets_data_tutorial_oep extends lime.utils.ByteArray {}
 @:image("assets/images/button.png") #if display private #end class __ASSET__assets_images_button_png extends lime.graphics.Image {}
 @:image("assets/images/coin.png") #if display private #end class __ASSET__assets_images_coin_png extends lime.graphics.Image {}

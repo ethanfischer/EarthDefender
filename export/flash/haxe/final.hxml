@@ -12,6 +12,7 @@
 -D openfl-next
 -D FLX_NO_GAMEPAD
 -D tools=2.6.9
+-D FLX_NO_DEBUG
 -D flash-use-stage
 -D no-compilation
 -D openfl-flash
