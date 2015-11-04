@@ -12,6 +12,7 @@ import flixel.ui.FlxVirtualPad;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxPoint;
+import lime.math.Rectangle;
 using flixel.util.FlxSpriteUtil;
 
 /**
@@ -44,6 +45,7 @@ class PlayState extends FlxState
 	private var _sndCoin:FlxSound;
 	private var _coin:Coin;
 	private var _enmSpawner:EnemySpawner;
+	private var _enmHotspot:FlxObject;
 	
 	#if mobile
 	public static var virtualPad:FlxVirtualPad;
@@ -58,7 +60,7 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
-		_map = new FlxOgmoLoader(AssetPaths.room_002c2__oel);
+		_map = new FlxOgmoLoader(AssetPaths.room_002c3__oel);
 		
 		//_map = new FlxOgmoLoader(AssetPaths.room_001a__oel);
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 16, 16, "walls");
@@ -121,10 +123,10 @@ class PlayState extends FlxState
 			_coin = new Coin(x + 4, y + 4);
 			
 		}
-		//else if (entityName == "enemy")
-		//{
-			//_grpEnemies.add(new Enemy(x + 4, y, Std.parseInt(entityData.get("etype"))));
-		//}
+		else if (entityName == "hotspot")
+		{
+			_enmHotspot = new FlxObject(Std.int(x),Std.int(y), 224, 224);
+		}
 	}
 	
 	
@@ -167,6 +169,7 @@ class PlayState extends FlxState
 		FlxG.collide(_grpEnemies, _mWalls);
 		FlxG.collide(_grpEnemies, _coin, endGame);
 		FlxG.overlap(_player, _grpEnemies, playerTouchEnemy);
+		FlxG.overlap(_grpEnemies, _enmHotspot, enmTouchHotspot);
 		_grpEnemies.forEachAlive(checkEnemyVision);
 		/*if (!_inCombat)
 		{*/
@@ -267,5 +270,10 @@ class PlayState extends FlxState
 	private function endGame(E:Enemy, C:Coin):Void
 	{
 		_ending = true;
+	}
+	
+	private function enmTouchHotspot(E:Enemy, HtSp:FlxObject):Void
+	{
+		E.go4it();
 	}
 }

@@ -238,17 +238,17 @@ class Player extends FlxSprite
 							
 						/*diagonal*/	
 						case UPRIGHTHOLD:
-							y -= HOLD_MOVEMENT_SPEED;
-							x += HOLD_MOVEMENT_SPEED;
+							y -= HOLD_MOVEMENT_SPEED/2;
+							x += HOLD_MOVEMENT_SPEED/2;
 						case UPLEFTHOLD:
-							y -= HOLD_MOVEMENT_SPEED;
-							x -= HOLD_MOVEMENT_SPEED;
+							y -= HOLD_MOVEMENT_SPEED/2;
+							x -= HOLD_MOVEMENT_SPEED/2;
 						case DOWNRIGHTHOLD:
-							y += HOLD_MOVEMENT_SPEED;
-							x += HOLD_MOVEMENT_SPEED;
+							y += HOLD_MOVEMENT_SPEED/2;
+							x += HOLD_MOVEMENT_SPEED/2;
 						case DOWNLEFTHOLD:
-							y += HOLD_MOVEMENT_SPEED;
-							x -= HOLD_MOVEMENT_SPEED;	
+							y += HOLD_MOVEMENT_SPEED/2;
+							x -= HOLD_MOVEMENT_SPEED/2;	
 					}
 				}
 				

@@ -20,9 +20,10 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 class EnemySpawner
 {
 	private var _enmSpnPts:Array<FlxPoint> = new Array();
-	private var _map = new FlxOgmoLoader(AssetPaths.room_002c2__oel);
+	private var _map = new FlxOgmoLoader(AssetPaths.room_002c3__oel);
 	private var _numSpnPts:Int;
 	private var _rdmInt:Int;
+	private var _prvEnmSpnPt:FlxPoint;
 	
 	public function new() 
 	{
@@ -30,10 +31,10 @@ class EnemySpawner
 		 * TODO
 		 * 
 		 * find all the spawn points in the level
-		 * //enemy_spawnpoint
 		 * 
-		 * add them to array
-		 * add spawn method that creates an enemy at one of these points randomly
+		 * 
+		 * 
+		 *
 		 * 
 		 * make sure you don't add two enemies at same spawn point
 		 * */
@@ -45,11 +46,20 @@ class EnemySpawner
 	
 	public function spawn():Enemy
 	{		
-		_rdmInt = Std.random(4);
-		var _rdmSpnPt:FlxPoint = _enmSpnPts[_rdmInt]; //get random position from _enmSpnPts
-		trace(_enmSpnPts[0]);
-		var _enm:Enemy = new Enemy(_rdmSpnPt.x, _rdmSpnPt.y);
-		return _enm;
+		var _rdmSpnPt:FlxPoint = new FlxPoint(0,0);
+		while (true)
+		{
+			_rdmInt = Std.random(4);
+			_rdmSpnPt = _enmSpnPts[_rdmInt]; //get random position from _enmSpnPts
+			
+			if (_prvEnmSpnPt != _rdmSpnPt)
+			{
+				var _enm:Enemy = new Enemy(_rdmSpnPt.x, _rdmSpnPt.y);
+				_prvEnmSpnPt = _rdmSpnPt;
+				return _enm;
+			}
+		}
+		
 	}
 	
 	
@@ -61,7 +71,6 @@ class EnemySpawner
 		
 		if (entityName == "enemy_spawnpoint")
 		{
-			trace("added _enmSpnPt!");
 			_enmSpnPts.push(new FlxPoint(x, y));
 			//_grpEnemies.add(new Enemy(x + 4, y, Std.parseInt(entityData.get("etype"))));
 		}

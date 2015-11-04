@@ -31,6 +31,7 @@ class Enemy extends FlxSprite
 	public var seesPlayer:Bool = false;
 	public var playerPos(default, null):FlxPoint;
 	public var coinPos(default, null):FlxPoint;
+	private var _going4it:Bool = false;
 	//private var _sndStep:FlxSound;
 	
 	public function new(X:Float=0, Y:Float=0) 
@@ -104,8 +105,8 @@ class Enemy extends FlxSprite
 	
 	public function chase():Void
 	{
-		trace("chase");
-		if (seesPlayer)
+		
+		if (seesPlayer && !_going4it)
 		{
 			//TODO hide
 			_brain.activeState = idle;
@@ -173,5 +174,11 @@ class Enemy extends FlxSprite
 		super.destroy();
 		
 		//_sndStep = FlxDestroyUtil.destroy(_sndStep);
+	}
+	
+	public function go4it():Void
+	{
+		_going4it = true;
+		chase();
 	}
 }
