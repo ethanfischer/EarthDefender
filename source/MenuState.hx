@@ -38,22 +38,17 @@ class MenuState extends FlxState
 			#end
 		}
 		
-		_txtTitle = new FlxText(0, 20, 0, "HaxeFlixel\nTutorial\nGame", 22);
+		_txtTitle = new FlxText(0, 20, 0, "Earth Defender\n (Rough Prototype)", 22);
 		_txtTitle.alignment = "center";
 		_txtTitle.screenCenter(true, false);
 		add(_txtTitle);
 		
 		_btnPlay = new FlxButton(0, 0, "Play", clickPlay);
-		_btnPlay.x = (FlxG.width / 2) - _btnPlay.width - 10;
-		_btnPlay.y = FlxG.height - _btnPlay.height - 10;
+		_btnPlay.x = (FlxG.width / 2) - _btnPlay.width/2;
+		_btnPlay.y = FlxG.height - _btnPlay.height * 3;
 		_btnPlay.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
 		add(_btnPlay);
 		
-		_btnOptions = new FlxButton(0, 0, "Options", clickOptions);
-		_btnOptions.x = (FlxG.width / 2) + 10;
-		_btnOptions.y = FlxG.height - _btnOptions.height - 10;
-		_btnOptions.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
-		add(_btnOptions);
 		
 		#if desktop
 		_btnExit = new FlxButton(FlxG.width - 28, 8, "X", clickExit);
@@ -65,6 +60,7 @@ class MenuState extends FlxState
 		
 		super.create();
 	}
+
 	
 	#if desktop
 	private function clickExit():Void

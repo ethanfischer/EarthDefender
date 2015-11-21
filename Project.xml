@@ -2,7 +2,7 @@
 <project>
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
-	<app title="TurnBasedRPG" file="TurnBasedRPG" main="Main" version="0.0.1" company="EthanFischer" package="com.EthanFischer.EHGame" />
+	<app title="TurnBasedRPG" file="TurnBasedRPG" main="Main" version="0.0.1" company="HaxeFlixel" package="com.haxeflixel.tutorial" />
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file, or you can set the actual size of your file manually at "Flxpreloader-onUpdate-bytesTotal"!-->
 	<app preloader="flixel.system.FlxPreloader" />
@@ -13,16 +13,16 @@
 	<!--------------------------------WINDOW SETTINGS------------------------------->
 	
 	<!--These window settings apply to all targets-->
-	<window width="640" height="480" fps="60" background="#000000" hardware="true" vsync="true" />
+	<window width="860" height="640" fps="60" background="#000000" hardware="true" vsync="true" />
 	
 	<!--Web-specific-->
-	<window if="web" orientation="portrait"  />
+	<window if="web" orientation="portrait"/>
 	
 	<!--Desktop-specific-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
+	<window if="desktop" orientation="portrait" fullscreen="false" resizable="true" />
 	
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+	<window if="mobile" orientation="portrait" fullscreen="true" width="0" height="0" />
 	
 	<!--------------------------------PATHS SETTINGS-------------------------------->
 	
@@ -40,9 +40,6 @@
 	<!--------------------------------LIBRARIES------------------------------------->
 	
 	<haxelib name="flixel"/>
-	<haxelib name="openfl"/>
-	<haxelib name="HypeGPlay" if="android" />
-	<haxelib name="InTheBox" if="android" />
 	
 	<!--In case you want to use the addons package-->
 	<haxelib name="flixel-addons" />
@@ -86,8 +83,4 @@
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 	<haxedef name="FLX_NO_DEBUG" if="mobile" />
 	
-	<template path="libs/AndroidManifext.xml" rename="AndroidManifext.xml" if="android" />
-	<java path="libs/google-play-services.jar" if="android" />
-	<template path="source/org/haxe/lime/GameActivity.java" rename="src/org/haxe/lime/GameActivity.java" if="android" />
-	<setenv name="GooglePlayID" value="" if="android" />
 </project>

@@ -68,7 +68,7 @@ class GameOverState extends FlxState
 		_txtHiScore.screenCenter(true, false);
 		add(_txtHiScore);
 		
-		_btnMainMenu = new FlxButton(0, FlxG.height - 32, "Main Menu", goMainMenu);
+		_btnMainMenu = new FlxButton(0, FlxG.height - 32, "Play Again", replay);
 		_btnMainMenu.screenCenter(true, false);
 		_btnMainMenu.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
 		add(_btnMainMenu);
@@ -109,10 +109,10 @@ class GameOverState extends FlxState
 	/**
 	 * When the user hits the main menu button, it should fade out and then take them back to the MenuState
 	 */
-	private function goMainMenu():Void
+	private function replay():Void
 	{
 		FlxG.camera.fade(FlxColor.BLACK, .33, false, function() {
-			FlxG.switchState(new MenuState());
+			FlxG.switchState(new PlayState());
 		});
 	}
 	
