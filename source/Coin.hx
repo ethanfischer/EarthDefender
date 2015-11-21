@@ -10,7 +10,7 @@ class Coin extends FlxSprite
 	public function new(X:Float=0, Y:Float=0) 
 	{
 		super(X, Y);
-		loadGraphic(AssetPaths.coin__png, false, 8, 8);
+		loadGraphic(AssetPaths.coin__png, false, 16, 16);
 	}
 	
 	override public function kill():Void 

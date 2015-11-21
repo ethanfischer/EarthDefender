@@ -76,6 +76,16 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		openfl.text.Font.registerFont (__ASSET__OPENFL__assets_fonts_nokiafc22_ttf);
 		openfl.text.Font.registerFont (__ASSET__OPENFL__assets_fonts_arial_ttf);
 		
@@ -87,6 +97,24 @@ class DefaultAssetLibrary extends AssetLibrary {
 		type.set ("assets/data/room-001.oel", AssetType.TEXT);
 		className.set ("assets/data/room-001a.oel", __ASSET__assets_data_room_001a_oel);
 		type.set ("assets/data/room-001a.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002.oel", __ASSET__assets_data_room_002_oel);
+		type.set ("assets/data/room-002.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002a.oel", __ASSET__assets_data_room_002a_oel);
+		type.set ("assets/data/room-002a.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002b.oel", __ASSET__assets_data_room_002b_oel);
+		type.set ("assets/data/room-002b.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c.oel", __ASSET__assets_data_room_002c_oel);
+		type.set ("assets/data/room-002c.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c1.oel", __ASSET__assets_data_room_002c1_oel);
+		type.set ("assets/data/room-002c1.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c2.oel", __ASSET__assets_data_room_002c2_oel);
+		type.set ("assets/data/room-002c2.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c3.oel", __ASSET__assets_data_room_002c3_oel);
+		type.set ("assets/data/room-002c3.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002c3B.oel", __ASSET__assets_data_room_002c3b_oel);
+		type.set ("assets/data/room-002c3B.oel", AssetType.TEXT);
+		className.set ("assets/data/room-002d.oel", __ASSET__assets_data_room_002d_oel);
+		type.set ("assets/data/room-002d.oel", AssetType.TEXT);
 		className.set ("assets/data/tutorial.oep", __ASSET__assets_data_tutorial_oep);
 		type.set ("assets/data/tutorial.oep", AssetType.TEXT);
 		className.set ("assets/images/button.png", __ASSET__assets_images_button_png);
@@ -123,6 +151,8 @@ class DefaultAssetLibrary extends AssetLibrary {
 		type.set ("assets/sounds/step.wav", AssetType.SOUND);
 		className.set ("assets/sounds/win.wav", __ASSET__assets_sounds_win_wav);
 		type.set ("assets/sounds/win.wav", AssetType.SOUND);
+		className.set ("assets/music/HaxeFlixel_Tutorial_Game.ogg", __ASSET__assets_music_haxeflixel_tutorial_game_ogg);
+		type.set ("assets/music/HaxeFlixel_Tutorial_Game.ogg", AssetType.MUSIC);
 		className.set ("assets/sounds/beep.mp3", __ASSET__assets_sounds_beep_mp3);
 		type.set ("assets/sounds/beep.mp3", AssetType.MUSIC);
 		className.set ("assets/sounds/flixel.mp3", __ASSET__assets_sounds_flixel_mp3);
@@ -145,6 +175,42 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		type.set (id, AssetType.TEXT);
 		id = "assets/data/room-001a.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002a.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002b.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c1.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c2.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c3.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c3B.oel";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002d.oel";
 		path.set (id, id);
 		
 		type.set (id, AssetType.TEXT);
@@ -220,6 +286,10 @@ class DefaultAssetLibrary extends AssetLibrary {
 		path.set (id, id);
 		
 		type.set (id, AssetType.SOUND);
+		id = "assets/music/HaxeFlixel_Tutorial_Game.ogg";
+		path.set (id, id);
+		
+		type.set (id, AssetType.MUSIC);
 		id = "assets/sounds/beep.mp3";
 		path.set (id, id);
 		
@@ -267,6 +337,33 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		className.set ("assets/data/room-001a.oel", __ASSET__assets_data_room_001a_oel);
 		type.set ("assets/data/room-001a.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002.oel", __ASSET__assets_data_room_002_oel);
+		type.set ("assets/data/room-002.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002a.oel", __ASSET__assets_data_room_002a_oel);
+		type.set ("assets/data/room-002a.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002b.oel", __ASSET__assets_data_room_002b_oel);
+		type.set ("assets/data/room-002b.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c.oel", __ASSET__assets_data_room_002c_oel);
+		type.set ("assets/data/room-002c.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c1.oel", __ASSET__assets_data_room_002c1_oel);
+		type.set ("assets/data/room-002c1.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c2.oel", __ASSET__assets_data_room_002c2_oel);
+		type.set ("assets/data/room-002c2.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c3.oel", __ASSET__assets_data_room_002c3_oel);
+		type.set ("assets/data/room-002c3.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002c3B.oel", __ASSET__assets_data_room_002c3b_oel);
+		type.set ("assets/data/room-002c3B.oel", AssetType.TEXT);
+		
+		className.set ("assets/data/room-002d.oel", __ASSET__assets_data_room_002d_oel);
+		type.set ("assets/data/room-002d.oel", AssetType.TEXT);
 		
 		className.set ("assets/data/tutorial.oep", __ASSET__assets_data_tutorial_oep);
 		type.set ("assets/data/tutorial.oep", AssetType.TEXT);
@@ -321,6 +418,9 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		className.set ("assets/sounds/win.wav", __ASSET__assets_sounds_win_wav);
 		type.set ("assets/sounds/win.wav", AssetType.SOUND);
+		
+		className.set ("assets/music/HaxeFlixel_Tutorial_Game.ogg", __ASSET__assets_music_haxeflixel_tutorial_game_ogg);
+		type.set ("assets/music/HaxeFlixel_Tutorial_Game.ogg", AssetType.MUSIC);
 		
 		className.set ("assets/sounds/beep.mp3", __ASSET__assets_sounds_beep_mp3);
 		type.set ("assets/sounds/beep.mp3", AssetType.MUSIC);
@@ -1059,6 +1159,15 @@ class DefaultAssetLibrary extends AssetLibrary {
 
 @:keep @:bind #if display private #end class __ASSET__assets_data_room_001_oel extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_data_room_001a_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002a_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002b_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c1_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c2_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c3_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002c3b_oel extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_room_002d_oel extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_data_tutorial_oep extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_images_button_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_images_coin_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
@@ -1077,6 +1186,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:keep @:bind #if display private #end class __ASSET__assets_sounds_select_wav extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_sounds_step_wav extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_sounds_win_wav extends null { }
+@:keep @:bind #if display private #end class __ASSET__assets_music_haxeflixel_tutorial_game_ogg extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_sounds_beep_mp3 extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_sounds_flixel_mp3 extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_sounds_beep_ogg extends null { }
@@ -1086,6 +1196,16 @@ class DefaultAssetLibrary extends AssetLibrary {
 
 
 #elseif html5
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1124,6 +1244,15 @@ class DefaultAssetLibrary extends AssetLibrary {
 
 @:file("assets/data/room-001.oel") #if display private #end class __ASSET__assets_data_room_001_oel extends lime.utils.ByteArray {}
 @:file("assets/data/room-001a.oel") #if display private #end class __ASSET__assets_data_room_001a_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002.oel") #if display private #end class __ASSET__assets_data_room_002_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002a.oel") #if display private #end class __ASSET__assets_data_room_002a_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002b.oel") #if display private #end class __ASSET__assets_data_room_002b_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c.oel") #if display private #end class __ASSET__assets_data_room_002c_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c1.oel") #if display private #end class __ASSET__assets_data_room_002c1_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c2.oel") #if display private #end class __ASSET__assets_data_room_002c2_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c3.oel") #if display private #end class __ASSET__assets_data_room_002c3_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002c3B.oel") #if display private #end class __ASSET__assets_data_room_002c3b_oel extends lime.utils.ByteArray {}
+@:file("assets/data/room-002d.oel") #if display private #end class __ASSET__assets_data_room_002d_oel extends lime.utils.ByteArray {}
 @:file("assets/data/tutorial.oep") #if display private #end class __ASSET__assets_data_tutorial_oep extends lime.utils.ByteArray {}
 @:image("assets/images/button.png") #if display private #end class __ASSET__assets_images_button_png extends lime.graphics.Image {}
 @:image("assets/images/coin.png") #if display private #end class __ASSET__assets_images_coin_png extends lime.graphics.Image {}
@@ -1142,6 +1271,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 @:file("assets/sounds/select.wav") #if display private #end class __ASSET__assets_sounds_select_wav extends lime.utils.ByteArray {}
 @:file("assets/sounds/step.wav") #if display private #end class __ASSET__assets_sounds_step_wav extends lime.utils.ByteArray {}
 @:file("assets/sounds/win.wav") #if display private #end class __ASSET__assets_sounds_win_wav extends lime.utils.ByteArray {}
+@:file("assets/music/HaxeFlixel_Tutorial_Game.ogg") #if display private #end class __ASSET__assets_music_haxeflixel_tutorial_game_ogg extends lime.utils.ByteArray {}
 @:file("C:/HaxeToolkit/haxe/lib/flixel/3,3,11/assets/sounds/beep.mp3") #if display private #end class __ASSET__assets_sounds_beep_mp3 extends lime.utils.ByteArray {}
 @:file("C:/HaxeToolkit/haxe/lib/flixel/3,3,11/assets/sounds/flixel.mp3") #if display private #end class __ASSET__assets_sounds_flixel_mp3 extends lime.utils.ByteArray {}
 @:file("C:/HaxeToolkit/haxe/lib/flixel/3,3,11/assets/sounds/beep.ogg") #if display private #end class __ASSET__assets_sounds_beep_ogg extends lime.utils.ByteArray {}

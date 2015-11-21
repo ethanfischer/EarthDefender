@@ -61,11 +61,11 @@ class Player extends FlxSprite
 	 * to work as expected (move one block at a time), because we use the
 	 * modulo-operator to check whether the next block has been reached.
 	 */
-	//HOlD_MOVEMENT should only kick in after you've help the key for a given amount of time
+	//HOlD_MOVEMENT should only kick in after you've held the key for a given amount of time
 	private static var HOLD_MOVEMENT_THRESHOLD:Float = 0.06;
 	private var HOLD_DURATION:Float = 0; //
 	private static inline var HOLD_MOVEMENT_SPEED:Int = 4;
-	private static inline var TAP_MOVEMENT_SPEED:Int = 8;
+	private static inline var TAP_MOVEMENT_SPEED:Int = 4;
 	
 	private var _upTap:Bool = false;
 	private var _downTap:Bool = false;
@@ -125,18 +125,23 @@ class Player extends FlxSprite
 	
 	private function movement():Void
 	{
+		
+		
 		#if !FLX_NO_KEYBOARD
-		_upTap = FlxG.keys.anyJustReleased(["UP", "W"]);
-		_downTap = FlxG.keys.anyJustReleased(["DOWN", "S"]);
-		_leftTap = FlxG.keys.anyJustReleased(["LEFT", "A"]);
-		_rightTap = FlxG.keys.anyJustReleased(["RIGHT", "D"]);
+		_upTap = (FlxG.keys.anyJustReleased(["UP", "W"]) && HOLD_DURATION < HOLD_MOVEMENT_THRESHOLD);
+		_downTap = (FlxG.keys.anyJustReleased(["DOWN", "S"]) && HOLD_DURATION < HOLD_MOVEMENT_THRESHOLD);
+		_leftTap = (FlxG.keys.anyJustReleased(["LEFT", "A"]) && HOLD_DURATION < HOLD_MOVEMENT_THRESHOLD);
+		_rightTap = (FlxG.keys.anyJustReleased(["RIGHT", "D"]) && HOLD_DURATION < HOLD_MOVEMENT_THRESHOLD);
 		
 		_upHold = FlxG.keys.anyPressed(["UP", "W"]);
 		_downHold = FlxG.keys.anyPressed(["DOWN", "S"]);
 		_leftHold = FlxG.keys.anyPressed(["LEFT", "A"]);
 		_rightHold = FlxG.keys.anyPressed(["RIGHT", "D"]);
 		
-		
+		//reset hold duration when no direction keys are pressed
+		if (!FlxG.keys.anyPressed(["UP", "W", "DOWN", "S", "LEFT", "A", "RIGHT", "D"])){
+			HOLD_DURATION = 0;
+		}
 		
 		//keep track of how long player holds buttons
 		if (_upHold || _downHold || _leftHold || _rightHold)
@@ -173,16 +178,12 @@ class Player extends FlxSprite
 			//		key listening code from grid based movement			//
 			if (_downTap) {
 				moveTo(MoveDirection.DOWNTAP);
-				HOLD_DURATION = 0;
 			} else if (_upTap) {
 				moveTo(MoveDirection.UPTAP);
-				HOLD_DURATION = 0;
 			} else if (_leftTap) {
 				moveTo(MoveDirection.LEFTTAP);
-				HOLD_DURATION = 0;
 			} else if (_rightTap) {
 				moveTo(MoveDirection.RIGHTTAP);
-				HOLD_DURATION = 0;
 			}
 			
 			if (HOLD_DURATION > HOLD_MOVEMENT_THRESHOLD)
@@ -238,17 +239,17 @@ class Player extends FlxSprite
 							
 						/*diagonal*/	
 						case UPRIGHTHOLD:
-							y -= HOLD_MOVEMENT_SPEED/2;
-							x += HOLD_MOVEMENT_SPEED/2;
+							y -= HOLD_MOVEMENT_SPEED;
+							x += HOLD_MOVEMENT_SPEED;
 						case UPLEFTHOLD:
-							y -= HOLD_MOVEMENT_SPEED/2;
-							x -= HOLD_MOVEMENT_SPEED/2;
+							y -= HOLD_MOVEMENT_SPEED;
+							x -= HOLD_MOVEMENT_SPEED;
 						case DOWNRIGHTHOLD:
-							y += HOLD_MOVEMENT_SPEED/2;
-							x += HOLD_MOVEMENT_SPEED/2;
+							y += HOLD_MOVEMENT_SPEED;
+							x += HOLD_MOVEMENT_SPEED;
 						case DOWNLEFTHOLD:
-							y += HOLD_MOVEMENT_SPEED/2;
-							x -= HOLD_MOVEMENT_SPEED/2;	
+							y += HOLD_MOVEMENT_SPEED;
+							x -= HOLD_MOVEMENT_SPEED;	
 					}
 				}
 				

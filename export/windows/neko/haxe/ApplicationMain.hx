@@ -31,7 +31,7 @@ class ApplicationMain {
 		
 		#if ios
 		flash.display.Stage.shouldRotateInterface = function (orientation:Int):Bool {
-			return (orientation == flash.display.Stage.OrientationLandscapeLeft || orientation == flash.display.Stage.OrientationLandscapeRight);
+			return (orientation == flash.display.Stage.OrientationPortrait || orientation == flash.display.Stage.OrientationPortraitUpsideDown);
 			
 		}
 		#end
@@ -45,9 +45,7 @@ class ApplicationMain {
 		
 		
 		
-		#if tizen
-		flash.display.Stage.setFixedOrientation (flash.display.Stage.OrientationLandscapeRight);
-		#end
+		
 		
 		flash.Lib.create (function () {
 				
@@ -57,8 +55,8 @@ class ApplicationMain {
 				
 				#if mobile
 				
-				forceWidth = 640;
-				forceHeight = 480;
+				forceWidth = 860;
+				forceHeight = 640;
 				
 				container = new flash.display.Sprite ();
 				barA = new flash.display.Sprite ();
@@ -127,7 +125,7 @@ class ApplicationMain {
 				}
 				
 			},
-			640, 480, 
+			860, 640, 
 			60, 
 			0,
 			(true ? flash.Lib.HARDWARE : 0) |
@@ -248,13 +246,13 @@ class ScaledStage extends flash.display.Stage {
 	
 	private override function get_stageHeight ():Int {
 		
-		return 480;
+		return 640;
 	
 	}
 	
 	private override function get_stageWidth ():Int {
 		
-		return 640;
+		return 860;
 	
 	}
 	
@@ -325,11 +323,11 @@ class ApplicationMain {
 		wx.App.boot (function () {
 			
 			
-			frame = wx.Frame.create (null, null, "TurnBasedRPG", null, { width: 640, height: 480 });
+			frame = wx.Frame.create (null, null, "TurnBasedRPG", null, { width: 860, height: 640 });
 			
 			
 			#if openfl
-			var stage = wx.NMEStage.create (frame, null, null, { width: 640, height: 480 });
+			var stage = wx.NMEStage.create (frame, null, null, { width: 860, height: 640 });
 			#end
 			
 			var hasMain = false;
@@ -499,12 +497,12 @@ class ApplicationMain {
 		
 		config = {
 			
-			build: "166",
+			build: "494",
 			company: "HaxeFlixel",
 			file: "TurnBasedRPG",
 			fps: 60,
 			name: "TurnBasedRPG",
-			orientation: "landscape",
+			orientation: "portrait",
 			packageName: "com.haxeflixel.tutorial",
 			version: "0.0.1",
 			windows: [
@@ -517,13 +515,13 @@ class ApplicationMain {
 					display: 0,
 					fullscreen: false,
 					hardware: true,
-					height: 480,
+					height: 640,
 					parameters: "{}",
 					resizable: true,
 					stencilBuffer: false,
 					title: "TurnBasedRPG",
 					vsync: true,
-					width: 640,
+					width: 860,
 					x: null,
 					y: null
 				},
@@ -533,7 +531,7 @@ class ApplicationMain {
 		
 		#if (js && html5)
 		#if (munit || utest)
-		openfl.Lib.embed (null, 640, 480, "null");
+		openfl.Lib.embed (null, 860, 640, "null");
 		#end
 		#else
 		create ();

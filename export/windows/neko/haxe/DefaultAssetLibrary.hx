@@ -79,6 +79,15 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		Font.registerFont (__ASSET__assets_fonts_nokiafc22_ttf);
 		Font.registerFont (__ASSET__assets_fonts_arial_ttf);
 		
@@ -86,6 +95,15 @@ class DefaultAssetLibrary extends AssetLibrary {
 		#if (windows || mac || linux)
 		
 		var useManifest = false;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
 		useManifest = true;
 		useManifest = true;
 		useManifest = true;
@@ -617,6 +635,15 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		openfl.text.Font.registerFont (__ASSET__OPENFL__assets_fonts_nokiafc22_ttf);
 		openfl.text.Font.registerFont (__ASSET__OPENFL__assets_fonts_arial_ttf);
 		
@@ -628,6 +655,24 @@ class DefaultAssetLibrary extends AssetLibrary {
 		type.set ("assets/data/room-001.oel", AssetType.TEXT);
 		path.set ("assets/data/room-001a.oel", "assets/data/room-001a.oel");
 		type.set ("assets/data/room-001a.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002.oel", "assets/data/room-002.oel");
+		type.set ("assets/data/room-002.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002a.oel", "assets/data/room-002a.oel");
+		type.set ("assets/data/room-002a.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002b.oel", "assets/data/room-002b.oel");
+		type.set ("assets/data/room-002b.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002c.oel", "assets/data/room-002c.oel");
+		type.set ("assets/data/room-002c.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002c1.oel", "assets/data/room-002c1.oel");
+		type.set ("assets/data/room-002c1.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002c2.oel", "assets/data/room-002c2.oel");
+		type.set ("assets/data/room-002c2.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002c3.oel", "assets/data/room-002c3.oel");
+		type.set ("assets/data/room-002c3.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002c3B.oel", "assets/data/room-002c3B.oel");
+		type.set ("assets/data/room-002c3B.oel", AssetType.TEXT);
+		path.set ("assets/data/room-002d.oel", "assets/data/room-002d.oel");
+		type.set ("assets/data/room-002d.oel", AssetType.TEXT);
 		path.set ("assets/data/tutorial.oep", "assets/data/tutorial.oep");
 		type.set ("assets/data/tutorial.oep", AssetType.TEXT);
 		path.set ("assets/images/button.png", "assets/images/button.png");
@@ -683,6 +728,33 @@ class DefaultAssetLibrary extends AssetLibrary {
 		path.set (id, id);
 		type.set (id, AssetType.TEXT);
 		id = "assets/data/room-001a.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002a.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002b.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c1.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c2.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c3.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002c3B.oel";
+		path.set (id, id);
+		type.set (id, AssetType.TEXT);
+		id = "assets/data/room-002d.oel";
 		path.set (id, id);
 		type.set (id, AssetType.TEXT);
 		id = "assets/data/tutorial.oep";
@@ -773,6 +845,15 @@ class DefaultAssetLibrary extends AssetLibrary {
 		#if (windows || mac || linux)
 		
 		var useManifest = false;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
+		useManifest = true;
 		useManifest = true;
 		useManifest = true;
 		useManifest = true;
@@ -1543,11 +1624,29 @@ class DefaultAssetLibrary extends AssetLibrary {
 
 
 
+
+
+
+
+
+
+
+
+
 @:keep @:bind #if display private #end class __ASSET__assets_fonts_nokiafc22_ttf extends null { }
 @:keep @:bind #if display private #end class __ASSET__assets_fonts_arial_ttf extends null { }
 
 
 #elseif html5
+
+
+
+
+
+
+
+
+
 
 
 

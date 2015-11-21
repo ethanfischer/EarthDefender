@@ -20,7 +20,7 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 class EnemySpawner
 {
 	private var _enmSpnPts:Array<FlxPoint> = new Array();
-	private var _map = new FlxOgmoLoader(AssetPaths.room_002c3__oel);
+	private var _map = Registry._map;
 	private var _numSpnPts:Int;
 	private var _rdmInt:Int;
 	private var _prvEnmSpnPt:FlxPoint;

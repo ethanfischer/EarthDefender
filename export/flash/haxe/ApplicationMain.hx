@@ -66,6 +66,14 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.TEXT);
 		
 		
+		urls.push ("assets/data/room-002c3B.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002d.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
 		urls.push ("assets/data/tutorial.oep");
 		types.push (lime.Assets.AssetType.TEXT);
 		
@@ -102,6 +110,10 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.IMAGE);
 		
 		
+		urls.push ("assets/sounds/alert.wav");
+		types.push (lime.Assets.AssetType.SOUND);
+		
+		
 		urls.push ("assets/sounds/coin.wav");
 		types.push (lime.Assets.AssetType.SOUND);
 		
@@ -111,6 +123,10 @@ class ApplicationMain {
 		
 		
 		urls.push ("assets/sounds/fled.wav");
+		types.push (lime.Assets.AssetType.SOUND);
+		
+		
+		urls.push ("assets/sounds/gameover.wav");
 		types.push (lime.Assets.AssetType.SOUND);
 		
 		
@@ -218,7 +234,7 @@ class ApplicationMain {
 		
 		config = {
 			
-			build: "403",
+			build: "542",
 			company: "HaxeFlixel",
 			file: "TurnBasedRPG",
 			fps: 60,
@@ -236,13 +252,13 @@ class ApplicationMain {
 					display: 0,
 					fullscreen: false,
 					hardware: true,
-					height: 480,
+					height: 640,
 					parameters: "{}",
 					resizable: true,
 					stencilBuffer: true,
 					title: "TurnBasedRPG",
 					vsync: true,
-					width: 640,
+					width: 860,
 					x: null,
 					y: null
 				},
@@ -260,7 +276,7 @@ class ApplicationMain {
 		
 		#if (js && html5)
 		#if (munit || utest)
-		openfl.Lib.embed (null, 640, 480, "000000");
+		openfl.Lib.embed (null, 860, 640, "000000");
 		#end
 		#else
 		create ();

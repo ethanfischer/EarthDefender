@@ -14,6 +14,7 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxPoint;
 import lime.math.Rectangle;
 using flixel.util.FlxSpriteUtil;
+import flixel.util.FlxRect;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -32,10 +33,11 @@ class PlayState extends FlxState
 	private var _player:Player;
 	private var _map:FlxOgmoLoader;
 	private var _mWalls:FlxTilemap;
+	
 	//private var _grpCoins:FlxTypedGroup<Coin>;
 	private var _grpEnemies:FlxTypedGroup<Enemy>;
 	private var _hud:HUD;
-	private var _money:Int = 0;
+	private var _kills:Int = 0;
 	private var _health:Int = 3;
 	//private var _inCombat:Bool = false;
 	//private var _combatHud:CombatHUD;
@@ -43,9 +45,15 @@ class PlayState extends FlxState
 	private var _won:Bool;
 	private var _paused:Bool;
 	private var _sndCoin:FlxSound;
+	private var _sndEnmHit:FlxSound;
+	private var _sndAlert:FlxSound;
+	private var _sndGameover:FlxSound;
+	
 	private var _coin:Coin;
 	private var _enmSpawner:EnemySpawner;
 	private var _enmHotspot:FlxObject;
+	private var _spnTimer:Float = 15;
+	
 	
 	#if mobile
 	public static var virtualPad:FlxVirtualPad;
@@ -60,9 +68,8 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
-		_map = new FlxOgmoLoader(AssetPaths.room_002c3__oel);
-		
-		//_map = new FlxOgmoLoader(AssetPaths.room_001a__oel);
+		_map = new FlxOgmoLoader(AssetPaths.room_002d__oel);
+		Registry._map = _map;
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 16, 16, "walls");
 		_mWalls.setTileProperties(1, FlxObject.NONE);
 		_mWalls.setTileProperties(2, FlxObject.ANY);
@@ -73,6 +80,9 @@ class PlayState extends FlxState
 		//_grpCoins = new FlxTypedGroup<Coin>();
 		//add(_grpCoins);
 		
+		_player = new Player(128, 128, _mWalls);
+		add(_player);
+		Registry._player = _player;
 		//EnemySpawner
 		_grpEnemies = new FlxTypedGroup<Enemy>();
 		_enmSpawner = new EnemySpawner();
@@ -80,14 +90,11 @@ class PlayState extends FlxState
 		_grpEnemies.add(_enm);
 		add(_grpEnemies);
 		
-		_player = new Player(128, 128, _mWalls);
-		
 		_map.loadEntities(placeEntities, "entities");
 		add(_coin);
 		
-		add(_player);
-		
-		FlxG.camera.follow(_player, FlxCamera.STYLE_TOPDOWN, 1);
+		FlxG.camera.follow(_player, FlxCamera.STYLE_LOCKON);
+		FlxG.camera.setBounds(0, 0, 1000, 1000);
 		
 		_hud = new HUD();
 		add(_hud);
@@ -95,7 +102,10 @@ class PlayState extends FlxState
 		//_combatHud = new CombatHUD();
 		//add(_combatHud);
 		
-		_sndCoin = FlxG.sound.load(AssetPaths.coin__wav);
+		//_sndCoin = FlxG.sound.load(AssetPaths.coin__wav);
+		_sndEnmHit = FlxG.sound.load(AssetPaths.miss__wav);
+		_sndAlert = FlxG.sound.load(AssetPaths.hurt__wav);
+		_sndGameover = FlxG.sound.load(AssetPaths.lose__wav);
 		
 		#if mobile
 		virtualPad = new FlxVirtualPad(FULL, NONE);		
@@ -155,12 +165,28 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
+		
+		spawnTimer();
 
+		//////////////////////////////////////////////////////////////////////
+		//							TESTING									//
+		//////////////////////////////////////////////////////////////////////
+		
+		
+		//FlxG.log.redirectTraces = true;
+		//trace("TESTING:\n \t");
+		//trace(_map.width + " " + _map.height);
+		
+		//-------------------------------------------------------------------//
+		
+		
 		if (_ending)
 		{
-			FlxG.switchState(new GameOverState(false, 0));
+			FlxG.switchState(new GameOverState(false, _kills));
 			return;
 		}
+		
+		
 		
 		
 		//FlxG.log.redirectTraces = true;
@@ -171,6 +197,8 @@ class PlayState extends FlxState
 		FlxG.overlap(_player, _grpEnemies, playerTouchEnemy);
 		FlxG.overlap(_grpEnemies, _enmHotspot, enmTouchHotspot);
 		_grpEnemies.forEachAlive(checkEnemyVision);
+		
+		
 		/*if (!_inCombat)
 		{*/
 		//}
@@ -179,7 +207,7 @@ class PlayState extends FlxState
 			//if (!_combatHud.visible)walls
 			//{
 				//_health = _combatHud.playerHealth;
-				//_hud.updateHUD(_health, _money);
+				//
 				//if (_combatHud.outcome == DEFEAT)
 				//{
 					//_ending = true;
@@ -215,7 +243,7 @@ class PlayState extends FlxState
 	
 	private function doneFadeOut():Void 
 	{
-		FlxG.switchState(new GameOverState(_won, _money));
+		FlxG.switchState(new GameOverState(_won, _kills));
 	}
 	
 	private function playerTouchEnemy(P:Player, E:Enemy):Void
@@ -223,6 +251,9 @@ class PlayState extends FlxState
 		if (P.alive && P.exists && E.alive && E.exists && !E.isFlickering())
 		{
 			E.kill();
+			_sndEnmHit.play();
+			_kills++;
+			_hud.updateHUD(_kills);
 			spawnEnemy();
 		}
 	}
@@ -249,16 +280,16 @@ class PlayState extends FlxState
 			e.seesPlayer = false;		
 	}
 	
-	private function playerTouchCoin(P:Player, C:Coin):Void
-	{
-		if (P.alive && P.exists && C.alive && C.exists)
-		{
-			_sndCoin.play(true);
-			_money++;
-			_hud.updateHUD(_health, _money);
-			C.kill();
-		}
-	}
+	//private function playerTouchCoin(P:Player, C:Coin):Void
+	//{
+		//if (P.alive && P.exists && C.alive && C.exists)
+		//{
+			//_sndCoin.play(true);
+			//
+			//_hud.updateHUD(_health, _kills);
+			//C.kill();
+		//}
+	//}
 	
 	private function spawnEnemy():Void
 	{
@@ -266,14 +297,30 @@ class PlayState extends FlxState
 		_grpEnemies.add(_enm);
 		add(_enm); //add the enemy to the scene
 	}
+	
+	private function spawnTimer():Void
+	{
+		_spnTimer -= FlxG.elapsed;
+		if (_spnTimer <= 0)
+		{
+			spawnEnemy();
+			_spnTimer = 45;
+		}
+	}
 
 	private function endGame(E:Enemy, C:Coin):Void
 	{
+		_sndGameover.play();
 		_ending = true;
 	}
 	
 	private function enmTouchHotspot(E:Enemy, HtSp:FlxObject):Void
 	{
-		E.go4it();
+		if (!E.getHtspFlag())
+		{
+			E.go4it();
+			_sndAlert.play();
+			E.setHtspFlag(true);
+		}
 	}
 }

@@ -38,6 +38,42 @@ class ApplicationMain {
 		types.push (lime.Assets.AssetType.TEXT);
 		
 		
+		urls.push ("assets/data/room-002.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002a.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002b.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002c.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002c1.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002c2.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002c3.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002c3B.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
+		urls.push ("assets/data/room-002d.oel");
+		types.push (lime.Assets.AssetType.TEXT);
+		
+		
 		urls.push ("assets/data/tutorial.oep");
 		types.push (lime.Assets.AssetType.TEXT);
 		
@@ -108,6 +144,10 @@ class ApplicationMain {
 		
 		urls.push ("assets/sounds/win.wav");
 		types.push (lime.Assets.AssetType.SOUND);
+		
+		
+		urls.push ("assets/music/HaxeFlixel_Tutorial_Game.ogg");
+		types.push (lime.Assets.AssetType.MUSIC);
 		
 		
 		urls.push ("assets/sounds/beep.mp3");
@@ -194,13 +234,13 @@ class ApplicationMain {
 		
 		config = {
 			
-			build: "74",
-			company: "EthanFischer",
+			build: "495",
+			company: "HaxeFlixel",
 			file: "TurnBasedRPG",
 			fps: 60,
 			name: "TurnBasedRPG",
 			orientation: "portrait",
-			packageName: "com.EthanFischer.EHGame",
+			packageName: "com.haxeflixel.tutorial",
 			version: "0.0.1",
 			windows: [
 				
@@ -212,13 +252,13 @@ class ApplicationMain {
 					display: 0,
 					fullscreen: false,
 					hardware: true,
-					height: 480,
+					height: 640,
 					parameters: "{}",
 					resizable: true,
 					stencilBuffer: true,
 					title: "TurnBasedRPG",
 					vsync: true,
-					width: 640,
+					width: 860,
 					x: null,
 					y: null
 				},
@@ -236,7 +276,7 @@ class ApplicationMain {
 		
 		#if (js && html5)
 		#if (munit || utest)
-		openfl.Lib.embed (null, 640, 480, "000000");
+		openfl.Lib.embed (null, 860, 640, "000000");
 		#end
 		#else
 		create ();
