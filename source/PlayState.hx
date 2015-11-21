@@ -68,8 +68,9 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
-		_map = new FlxOgmoLoader(AssetPaths.room_002d__oel);
-		Registry._map = _map;
+		_map = new FlxOgmoLoader(AssetPaths.room_002e__oel);
+		Registry._map = _map; //this Registry.map is important and depended on by other classes
+		
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 16, 16, "walls");
 		_mWalls.setTileProperties(1, FlxObject.NONE);
 		_mWalls.setTileProperties(2, FlxObject.ANY);
@@ -94,7 +95,7 @@ class PlayState extends FlxState
 		add(_coin);
 		
 		FlxG.camera.follow(_player, FlxCamera.STYLE_LOCKON);
-		FlxG.camera.setBounds(0, 0, 1000, 1000);
+		FlxG.camera.setBounds(0, 0, 1500, 1500); //Tags: IMPORTANT, LEVEL BOUNDARIES, STAGE BOUNDARIES, 
 		
 		_hud = new HUD();
 		add(_hud);
@@ -135,7 +136,7 @@ class PlayState extends FlxState
 		}
 		else if (entityName == "hotspot")
 		{
-			_enmHotspot = new FlxObject(Std.int(x),Std.int(y), 224, 224);
+			_enmHotspot = new FlxObject(Std.int(x),Std.int(y), 960, 960);
 		}
 	}
 	
@@ -273,7 +274,7 @@ class PlayState extends FlxState
 	{
 		if (_mWalls.ray(e.getMidpoint(), _player.getMidpoint()))
 		{
-			e.seesPlayer = true;
+			if (e.isOnScreen()) e.seesPlayer = true;
 			e.coinPos.copyFrom(new FlxPoint(_coin.x, _coin.y));
 		}
 		else
@@ -304,7 +305,7 @@ class PlayState extends FlxState
 		if (_spnTimer <= 0)
 		{
 			spawnEnemy();
-			_spnTimer = 45;
+			_spnTimer = 30;
 		}
 	}
 

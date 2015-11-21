@@ -7,7 +7,7 @@ import org.flixel.*;
 class Registry 
 {  
 		public static var _player:Player;
-		public static var _map:FlxOgmoLoader;
+		public static var _map:FlxOgmoLoader; //this is intantiated in Playstate
 		
 		public function Registry() 
 		{

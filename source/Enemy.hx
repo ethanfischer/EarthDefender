@@ -24,7 +24,7 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 
 class Enemy extends FlxSprite
 {
-	public var speed:Float = 80;
+	public var speed:Float = 120;
 	public var etype(default, null):Int;
 	private var _brain:FSM;
 	private var _idleTmr:Float;
@@ -113,7 +113,7 @@ class Enemy extends FlxSprite
 			////else
 			////{
 				////_moveDir = FlxRandom.intRanged(0, 8) * 45;
-				////FlxAngle.rotatePoint(speed * .5, 0, 0, 0, _moveDir, velocity);
+				////FlxAngle.rotatePoint(spe^&^&ed * .5, 0, 0, 0, _moveDir, velocity);
 				////
 			////}
 			////_idleTmr = FlxRandom.intRanged(1, 4);			
@@ -135,6 +135,11 @@ class Enemy extends FlxSprite
 		{	
 			_brain.activeState = chase;
 			FlxVelocity.moveTowardsPoint(this, coinPos, Std.int(speed));
+			if (_going4it)
+			{
+				speed = 100; //slightly slower than their straif, retreat speed
+			}
+			
 		}
 	}
 	
@@ -224,7 +229,10 @@ class Enemy extends FlxSprite
 	
 	override public function destroy():Void 
 	{
+		
+		_going4it = false;
 		super.destroy();
+		
 		
 		//_sndStep = FlxDestroyUtil.destroy(_sndStep);
 	}

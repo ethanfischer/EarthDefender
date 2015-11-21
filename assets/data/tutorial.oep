@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <OgmoVersion>2.1.0.6</OgmoVersion>
-  <Name>HaxeFlixel-Tutorial</Name>
+  <Name>EarthDefender</Name>
   <BackgroundColor A="255" R="125" G="160" B="255" />
   <GridColor A="255" R="255" G="240" B="90" />
   <LevelDefaultSize>
-    <Width>1000</Width>
-    <Height>1000</Height>
+    <Width>1500</Width>
+    <Height>1500</Height>
   </LevelDefaultSize>
   <LevelMinimumSize>
     <Width>1000</Width>
     <Height>1000</Height>
   </LevelMinimumSize>
   <LevelMaximumSize>
-    <Width>1000</Width>
-    <Height>1000</Height>
+    <Width>2000</Width>
+    <Height>2000</Height>
   </LevelMaximumSize>
   <Filename>C:\Users\Ethan Fischer\TurnBasedRPG\assets\data\tutorial.oep</Filename>
   <AngleMode>Degrees</AngleMode>
@@ -113,8 +113,8 @@
     </EntityDefinition>
     <EntityDefinition Name="hotspot" Limit="-1" ResizableX="false" ResizableY="false" Rotatable="false" RotateIncrement="15">
       <Size>
-        <Width>320</Width>
-        <Height>320</Height>
+        <Width>960</Width>
+        <Height>960</Height>
       </Size>
       <Origin>
         <X>0</X>
