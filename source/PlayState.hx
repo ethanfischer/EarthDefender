@@ -47,7 +47,6 @@ class PlayState extends FlxState
 	private var _sndCoin:FlxSound;
 	private var _sndEnmHit:FlxSound;
 	private var _sndAlert:FlxSound;
-	private var _sndGameover:FlxSound;
 	
 	private var _coin:Coin;
 	private var _enmSpawner:EnemySpawner;
@@ -106,7 +105,6 @@ class PlayState extends FlxState
 		//_sndCoin = FlxG.sound.load(AssetPaths.coin__wav);
 		_sndEnmHit = FlxG.sound.load(AssetPaths.miss__wav);
 		_sndAlert = FlxG.sound.load(AssetPaths.hurt__wav);
-		_sndGameover = FlxG.sound.load(AssetPaths.lose__wav);
 		
 		#if mobile
 		virtualPad = new FlxVirtualPad(FULL, NONE);		
@@ -311,7 +309,6 @@ class PlayState extends FlxState
 
 	private function endGame(E:Enemy, C:Coin):Void
 	{
-		_sndGameover.play();
 		_ending = true;
 	}
 	
@@ -320,6 +317,7 @@ class PlayState extends FlxState
 		if (!E.getHtspFlag())
 		{
 			E.go4it();
+			FlxG.camera.shake(0.02, 0.2);
 			_sndAlert.play();
 			E.setHtspFlag(true);
 		}

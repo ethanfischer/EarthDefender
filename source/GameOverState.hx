@@ -8,6 +8,7 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxSave;
+import flixel.system.FlxSound;
 using flixel.util.FlxSpriteUtil;
 
 class GameOverState extends FlxState
@@ -20,6 +21,8 @@ class GameOverState extends FlxState
 	private var _txtScore:FlxText;		// text of the score
 	private var _txtHiScore:FlxText;	// text to show the hi-score
 	private var _btnMainMenu:FlxButton;	// button to go to main menu
+	private var _sndGameover:FlxSound;
+
 	
 	/**
 	 * Called from PlayState, this will set our win and score variables
@@ -41,70 +44,82 @@ class GameOverState extends FlxState
 		#end
 		
 		// create and add each of our items
-		
+		_sndGameover = FlxG.sound.load(AssetPaths.lose__wav);
+		_sndGameover.play();
+				
 		_txtTitle = new FlxText(0, 20, 0, _win ? "You Win!" : "Game Over!", 22);
 		_txtTitle.alignment = "center";
 		_txtTitle.screenCenter(true, false);
 		add(_txtTitle);
 		
-		_txtMessage = new FlxText(0, (FlxG.height / 2) - 18, 0, "Final Score:", 8);
+		_txtMessage = new FlxText(0, (FlxG.height / 2) - 18, 0, "Score: " + Std.string(_score), 8);
 		_txtMessage.alignment = "center";
+		_txtMessage.size = 16;
 		_txtMessage.screenCenter(true, false);
 		add(_txtMessage);
 		
-		_sprScore = new FlxSprite((FlxG.width / 2) - 8, 0, AssetPaths.coin__png);
-		_sprScore.screenCenter(false, true);
-		add(_sprScore);
+		//_sprScore = new FlxSprite((FlxG.width / 2) - 8, 0, AssetPaths.coin__png);
+		//_sprScore.screenCenter(false, true);
+		//add(_sprScore);
 		
-		_txtScore = new FlxText((FlxG.width / 2), 0, 0, Std.string(_score), 8);
-		_txtScore.screenCenter(false, true);
-		add(_txtScore);
+		//_txtScore = new FlxText((FlxG.width / 2), 0, 0, Std.string(_score), 8);
+		//_txtScore.screenCenter(false, true);
+		//add(_txtScore);
 		
-		// we want to see what the hi-score is
-		var _hiScore = checkHiScore(_score);
+		//update hiscore if applicable
+		if (_score > Registry._hiScore) Registry._hiScore = _score;
 		
-		_txtHiScore = new FlxText(0, (FlxG.height / 2) + 10, 0, "Hi-Score: " + Std.string(_hiScore), 8);
+		_txtHiScore = new FlxText(0, (FlxG.height / 2), 0, "Best: " + Std.string(Registry._hiScore) + "\n\n\n\n\nPress Spacebar", 8);
 		_txtHiScore.alignment = "center";
+		_txtHiScore.size = 16;
 		_txtHiScore.screenCenter(true, false);
 		add(_txtHiScore);
 		
-		_btnMainMenu = new FlxButton(0, FlxG.height - 32, "Play Again", replay);
-		_btnMainMenu.screenCenter(true, false);
-		_btnMainMenu.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
-		add(_btnMainMenu);
+		//_btnMainMenu = new FlxButton(0, FlxG.height - 32, "Play Again", replay);
+		//_btnMainMenu.screenCenter(true, false);
+		//_btnMainMenu.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
+		//add(_btnMainMenu);
 		
 		FlxG.camera.fade(FlxColor.BLACK, .33, true);
 		
 		super.create();
 	}
 	
-	/**
-	 * This function will compare the new score with the saved hi-score. 
-	 * If the new score is higher, it will save it as the new hi-score, otherwise, it will return the saved hi-score.
-	 * @param	Score	The new score
-	 * @return	the hi-score
-	 */
-	private function checkHiScore(Score:Int):Int
+	override public function update():Void
 	{
-		var _hi:Int = Score;
-		var _save:FlxSave = new FlxSave();
-		if (_save.bind("flixel-tutorial"))
+		if (FlxG.keys.anyPressed(["SPACE", "ENTER"]))
 		{
-			if (_save.data.hiscore != null)
-			{
-				if (_save.data.hiscore > _hi)
-				{
-					_hi = _save.data.hiscore;
-				}
-				else
-				{
-					_save.data.hiscore = _hi;
-				}
-			}
+			replay();
 		}
-		_save.close();
-		return _hi;
 	}
+	
+	///**
+	 //* This function will compare the new score with the saved hi-score. 
+	 //* If the new score is higher, it will save it as the new hi-score, otherwise, it will return the saved hi-score.
+	 //* @param	Score	The new score
+	 //* @return	the hi-score
+	 //*/
+	//private function checkHiScore(Score:Int):Int
+	//{
+		//var _hi:Int = Score;
+		//var _save:FlxSave = new FlxSave();
+		//if (_save.bind("flixel-tutorial"))
+		//{
+			//if (_save.data.hiscore != null)
+			//{
+				//if (_save.data.hiscore > _hi)
+				//{
+					//_hi = _save.data.hiscore;
+				//}
+				//else
+				//{
+					//_save.data.hiscore = _hi;
+				//}
+			//}
+		//}
+		//_save.close();
+		//return _hi;
+	//}
 	
 	/**
 	 * When the user hits the main menu button, it should fade out and then take them back to the MenuState

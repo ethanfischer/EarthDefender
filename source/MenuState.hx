@@ -38,16 +38,17 @@ class MenuState extends FlxState
 			#end
 		}
 		
-		_txtTitle = new FlxText(0, 20, 0, "Earth Defender\n (Rough Prototype)", 22);
+		_txtTitle = new FlxText(0, 20, 0, "Earth Defender\n (Prototype) \n\n\n\n\n\nPress Spacebar", 22);
 		_txtTitle.alignment = "center";
 		_txtTitle.screenCenter(true, false);
 		add(_txtTitle);
 		
-		_btnPlay = new FlxButton(0, 0, "Play", clickPlay);
-		_btnPlay.x = (FlxG.width / 2) - _btnPlay.width/2;
-		_btnPlay.y = FlxG.height - _btnPlay.height * 3;
-		_btnPlay.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
-		add(_btnPlay);
+		//_btnPlay = new FlxButton(0, 0, "Play", clickPlay);
+		//_btnPlay.setSize(100, 50);
+		//_btnPlay.x = (FlxG.width / 2) - _btnPlay.width/2;
+		//_btnPlay.y = FlxG.height - _btnPlay.height * 5;
+		//add(_btnPlay);
+		
 		
 		
 		#if desktop
@@ -60,6 +61,14 @@ class MenuState extends FlxState
 		
 		super.create();
 	}
+	
+	override public function update():Void
+	{
+		
+		if (FlxG.keys.anyPressed(["SPACE", "ENTER"])) clickPlay();
+	}
+	
+	
 
 	
 	#if desktop
