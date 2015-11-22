@@ -98,8 +98,8 @@
     <player id="1" x="720" y="720" />
     <enemy_spawnpoint id="3" x="32" y="32" etype="0" />
     <enemy_spawnpoint id="4" x="1456" y="32" etype="0" />
-    <enemy_spawnpoint id="5" x="1456" y="1456" etype="0" />
-    <enemy_spawnpoint id="6" x="16" y="1472" etype="0" />
     <hotspot id="2" x="256" y="240" />
+    <enemy_spawnpoint id="5" x="32" y="1456" etype="0" />
+    <enemy_spawnpoint id="6" x="1456" y="1456" etype="0" />
   </entities>
 </level>

@@ -52,7 +52,7 @@ class EnemySpawner
 			_rdmInt = Std.random(4);
 			_rdmSpnPt = _enmSpnPts[_rdmInt]; //get random position from _enmSpnPts
 			
-			if (_prvEnmSpnPt != _rdmSpnPt)
+			if (_prvEnmSpnPt != _rdmSpnPt && _rdmSpnPt != null)
 			{
 				var _enm:Enemy = new Enemy(_rdmSpnPt.x, _rdmSpnPt.y);
 				_prvEnmSpnPt = _rdmSpnPt;

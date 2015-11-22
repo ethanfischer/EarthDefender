@@ -8,33 +8,38 @@ import flixel.util.FlxAngle;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
+import flixel.util.FlxRect;
 import flixel.util.FlxVelocity;
 using flixel.util.FlxSpriteUtil;
+import flixel.tile.FlxTilemap;
+import flixel.util.FlxPath;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 
 /*
  * TODO
  * 
- * -make enemies move tile-by-tile
- * -make enemies hide in shadows when they see you
- * -make enemies run when you get close to them
- * -implement path finding for getting to the globe, moving away from player
+ * -make enemies smarter:
+ * 		-hide in shadows
+ * 		-wait until you are away from the globe
+ * 
  * 
 */
 
 class Enemy extends FlxSprite
 {
-	public var speed:Float = 120;
+	public var speed:Float = 100;
 	public var etype(default, null):Int;
 	private var _brain:FSM;
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
 	public var seesPlayer:Bool = false;
 	public var playerPos(default, null):FlxPoint;
-	public var coinPos(default, null):FlxPoint;
+	//public var coinPos(default, null):FlxPoint;
 	private var _going4it:Bool = false;
 	private var _player:Player;
 	private var _htspFlag:Bool = false;
+	
+	private var _pathSetter:FlxPath = new FlxPath(); //I guess a FlxPath object makes your object follow a path. Seems backwards to me, but whatever
 
 	
 	//corners of the map used for moving away from the player
@@ -42,6 +47,12 @@ class Enemy extends FlxSprite
 	private var _UR:FlxPoint; //upright
 	private var _DL:FlxPoint; //downleft
 	private var _DR:FlxPoint; //downright
+	
+	private var _path:Array<FlxPoint> = new Array();
+	private var _chaseFlag:Bool = false;
+	private var _goal:FlxPoint = new FlxPoint( -100, -100); //intialize at this so its not null. Goal is updated each time you make a new path
+	//private var _visionBox:FlxRect;
+
 	
 	//private var _sndStep:FlxSound;
 	
@@ -56,6 +67,7 @@ class Enemy extends FlxSprite
 		//animation.add("lr", [3, 4, 3, 5], 6, false);
 		//animation.add("u", [6, 7, 6, 8], 6, false);
 		//drag.x = drag.y = 10;
+		
 		width = 16;
 		height = 16;
 		_brain = new FSM(chase);
@@ -64,13 +76,14 @@ class Enemy extends FlxSprite
 		scrollFactor.x = 1;
 		scrollFactor.y = 1;
 		
-		_UL = new FlxPoint(0, 0);
-		_UR = new FlxPoint(Registry._map.width, 0);
-		_DL = new FlxPoint(0, Registry._map.height);
-		_DR = new FlxPoint(Registry._map.width, Registry._map.height);
+		//hard-coded for now, TODO use _spnPts
+		_UL = new FlxPoint(32, 32);
+		_UR = new FlxPoint(1456, 32);
+		_DL = new FlxPoint(32, 1456);
+		_DR = new FlxPoint(1456, 1456);
 		
-		coinPos = FlxPoint.get();
-		
+		//coinPos = FlxPoint.get();
+
 		//_sndStep = FlxG.sound.load(AssetPaths.step__wav,.4);
 		//_sndStep.proximity(x,y,FlxG.camera.target, FlxG.width *.6);
 	}
@@ -129,17 +142,22 @@ class Enemy extends FlxSprite
 		if (seesPlayer && !_going4it) //TODO if in shadows, be idle. Otherwise, flee! FOr now, if sees player, flee!
 		{
 			//TODO hide in shadows
+			_brain.activeState = flee;
 			flee();
 		}
 		else
 		{	
 			_brain.activeState = chase;
-			FlxVelocity.moveTowardsPoint(this, coinPos, Std.int(speed));
+			
+			//FlxVelocity.moveTowardsPoint(this, coinPos, Std.int(speed));
+			
+			followPath(Registry._earthPos);
+			
 			if (_going4it)
 			{
-				speed = 100; //slightly slower than their straif, retreat speed
+				speed = 110; //slightly slower than their straif/retreat speed	
 			}
-			
+				
 		}
 	}
 	
@@ -148,12 +166,48 @@ class Enemy extends FlxSprite
 		if (seesPlayer)
 		{
 			_brain.activeState = flee;
-			
+			speed = 100;
 			moveAwayFromPlayer();
 		} else
 		{
+			_brain.activeState = chase;
 			chase();
 		}
+	}
+	
+	public function hide():Void
+	{
+		//TODO, make them seek the nearest shadow and wait there
+		//for now, wait at the perimeter
+		if (seesPlayer) 
+		{
+			flee();
+			_brain.activeState = flee;
+		}
+		else
+		{
+			_brain.activeState = hide;
+			_pathSetter.cancel(); //stop from moving
+			_goal = new FlxPoint(x, y); //have to set goal to something so when chase is called again, it will follow the path again
+		}
+	}
+	
+	private function followPath(i_goal:FlxPoint):Void
+	{
+		if (i_goal != Registry._earthPos) trace(i_goal + "\n" + _goal);
+		if (i_goal != _goal) //if you've already established a path, don't do it again until it's new path (new goal)
+		{
+			//if(i_goal != Registry._earthPos) trace("following path");
+			_goal = i_goal;
+			_path = Registry._mWalls.findPath(new FlxPoint(x,y), _goal);
+			
+			if (_path != null)
+			{	
+				_pathSetter.start(this, _path, speed);
+				
+			}
+		}
+		//if(i_goal != Registry._earthPos) trace("i_goal == _goal");
 	}
 	
 	override public function draw():Void 
@@ -198,23 +252,31 @@ class Enemy extends FlxSprite
 		var _player = Registry._player;
 		//upperleft of player
 		if (x < _player.x && y < _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _UL, Std.int(speed));
+			
+			//TODO replace with pathfinding
+			//FlxVelocity.moveTowardsPoint(this, _UL, Std.int(speed));
+			followPath(_UL);
 			
 		} 
 		
 		//upperright of player
 		else if (x >= _player.x && y < _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _UR, Std.int(speed));
+			//FlxVelocity.moveTowardsPoint(this, _UR, Std.int(speed));
+			followPath(_UR);
+
 		} 
 		
 		//downleft of player
 		else if (x <= _player.x && y > _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _DL, Std.int(speed));			
+			//FlxVelocity.moveTowardsPoint(this, _DL, Std.int(speed));	
+			followPath(_DL);
+
 		} 
 		
 		//downright of player
 		else if (x > _player.x &&  y > _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _DR, Std.int(speed));
+			//FlxVelocity.moveTowardsPoint(this, _DR, Std.int(speed));
+			followPath(_DR);
 		}
 	}
 	
@@ -243,11 +305,11 @@ class Enemy extends FlxSprite
 		chase();
 	}
 	
-	public function getHtspFlag():Bool
+	public function getHtspFlag():Bool //get hotspot flag
 	{
 		return _htspFlag;
 	}
-	public function setHtspFlag(b:Bool):Void
+	public function setHtspFlag(b:Bool):Void //hotspot flag
 	{
 		_htspFlag = b;
 	}

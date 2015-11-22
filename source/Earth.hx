@@ -5,7 +5,7 @@ import flixel.FlxSprite;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 
-class Coin extends FlxSprite
+class Earth extends FlxSprite
 {
 	public function new(X:Float=0, Y:Float=0) 
 	{
