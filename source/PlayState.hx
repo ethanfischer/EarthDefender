@@ -202,6 +202,8 @@ class PlayState extends FlxState
 		FlxG.collide(_grpEnemies, _earth, endGame);
 		FlxG.overlap(_player, _grpEnemies, playerTouchEnemy);
 		FlxG.overlap(_grpEnemies, _enmHotspot, enmTouchHotspot);
+		FlxG.overlap(_grpEnemies, _earth.tooLateBox, enmTouchTooLateBox);
+
 		_grpEnemies.forEachAlive(checkEnemyVision);
 		
 		
@@ -343,5 +345,10 @@ class PlayState extends FlxState
 				_go4itTimer = 0;
 			}
 		}
+	}
+	
+	private function enmTouchTooLateBox(E:Enemy, TLB:FlxObject):Void
+	{
+		if(!_earth.isOnScreen()) FlxG.camera.follow(_earth);
 	}
 }
