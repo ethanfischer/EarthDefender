@@ -9,9 +9,11 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import flixel.util.FlxRect;
+import flixel.util.FlxMath;
 import flixel.util.FlxVelocity;
 using flixel.util.FlxSpriteUtil;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxColor;
 import flixel.util.FlxPath;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 
@@ -27,7 +29,7 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 
 class Enemy extends FlxSprite
 {
-	public var speed:Float = 100;
+	public var _speed:Float = 100;
 	public var etype(default, null):Int;
 	private var _brain:FSM;
 	private var _idleTmr:Float;
@@ -35,7 +37,7 @@ class Enemy extends FlxSprite
 	public var seesPlayer:Bool = false;
 	public var playerPos(default, null):FlxPoint;
 	//public var coinPos(default, null):FlxPoint;
-	private var _going4it:Bool = false;
+	private var _going4itFlag:Bool = false;
 	private var _player:Player;
 	private var _htspFlag:Bool = false;
 	
@@ -51,6 +53,9 @@ class Enemy extends FlxSprite
 	private var _path:Array<FlxPoint> = new Array();
 	private var _chaseFlag:Bool = false;
 	private var _goal:FlxPoint = new FlxPoint( -100, -100); //intialize at this so its not null. Goal is updated each time you make a new path
+	
+	private var _go4itTimer:Float = 0;
+	private var _closeCallFlag:Bool = false; //once the enemy is going4it, once they're on screen they should go a little faster, but only update speed once
 	//private var _visionBox:FlxRect;
 
 	
@@ -94,6 +99,9 @@ class Enemy extends FlxSprite
 			//return;
 		_brain.update();
 		super.update();
+		
+		if (overlaps(Registry._enmHotspot)) enmTouchHotspot();
+		
 	
 		//if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
 		//{
@@ -139,7 +147,7 @@ class Enemy extends FlxSprite
 	public function chase():Void
 	{
 		
-		if (seesPlayer && !_going4it) //TODO if in shadows, be idle. Otherwise, flee! FOr now, if sees player, flee!
+		if (seesPlayer && !_going4itFlag) //TODO if in shadows, be idle. Otherwise, flee! FOr now, if sees player, flee!
 		{
 			//TODO hide in shadows
 			_brain.activeState = flee;
@@ -147,26 +155,50 @@ class Enemy extends FlxSprite
 		}
 		else
 		{	
-			_brain.activeState = chase;
-			
-			//FlxVelocity.moveTowardsPoint(this, coinPos, Std.int(speed));
-			
-			followPath(Registry._earthPos);
-			
-			if (_going4it)
+			if (_going4itFlag)
 			{
-				speed = 110; //slightly slower than their straif/retreat speed	
-			}
-				
+				if (isOnScreen() && !_closeCallFlag) //TODO: needs to update 
+				{
+					_speed = 110; //this difference in _speed makes for more 'close calls' and thus more excitement hopefully
+					_goal = new FlxPoint(Registry._earthPos.x, Registry._earthPos.y + 1); //have to reset goal so it will update followpath with new speed
+					_closeCallFlag = true;
+				}
+				else _speed = 80; //slightly slower than their straif/retreat _speed	
+			}			
+			_brain.activeState = chase;
+			followPath(Registry._earthPos);
 		}
+	}
+	
+	private function enmTouchHotspot():Void
+	{
+		//if (!FlxG.keys.anyPressed(["g"])) FlxG.camera.follow(this); //For testing purposes, to see where they are when they contact the perimeter
+		
+		var d:Float = FlxMath.getDistance(new FlxPoint(Registry._player.x, Registry._player.y), new FlxPoint(x, y));
+		//trace(d);
+		
+		if (_go4itTimer < 4 && !_going4itFlag) hide();
+		
+		if (d > 1000) //if player is sufficiently far enough away 
+		{
+			_go4itTimer += FlxG.elapsed; //count how long they are far enough away
+			if (_go4itTimer > 3 && !_going4itFlag)
+			{
+				go4it();
+			}
+		}
+		else _go4itTimer = 0; //if player comes in range, reset the go4ittimer
+		
+	
+		
 	}
 	
 	public function flee():Void
 	{
-		if (seesPlayer)
+		if (seesPlayer && !_going4itFlag)
 		{
 			_brain.activeState = flee;
-			speed = 100;
+			_speed = 100;
 			moveAwayFromPlayer();
 		} else
 		{
@@ -179,7 +211,7 @@ class Enemy extends FlxSprite
 	{
 		//TODO, make them seek the nearest shadow and wait there
 		//for now, wait at the perimeter
-		if (seesPlayer) 
+		if (seesPlayer && !_going4itFlag) 
 		{
 			flee();
 			_brain.activeState = flee;
@@ -194,20 +226,16 @@ class Enemy extends FlxSprite
 	
 	private function followPath(i_goal:FlxPoint):Void
 	{
-		if (i_goal != Registry._earthPos) trace(i_goal + "\n" + _goal);
 		if (i_goal != _goal) //if you've already established a path, don't do it again until it's new path (new goal)
 		{
-			//if(i_goal != Registry._earthPos) trace("following path");
 			_goal = i_goal;
 			_path = Registry._mWalls.findPath(new FlxPoint(x,y), _goal);
 			
 			if (_path != null)
 			{	
-				_pathSetter.start(this, _path, speed);
-				
+				_pathSetter.start(this, _path, _speed);
 			}
 		}
-		//if(i_goal != Registry._earthPos) trace("i_goal == _goal");
 	}
 	
 	override public function draw():Void 
@@ -229,7 +257,6 @@ class Enemy extends FlxSprite
 				else
 					facing = FlxObject.DOWN;
 			}
-			
 			//switch(facing)
 			//{
 				//case FlxObject.LEFT, FlxObject.RIGHT:
@@ -242,7 +269,6 @@ class Enemy extends FlxSprite
 					//animation.play("d");
 			//}
 		}
-			
 		super.draw();
 	}
 	
@@ -250,32 +276,26 @@ class Enemy extends FlxSprite
 	{
 		//TODO make movement smarter/use path finding to get enemy to avoid colliding with walls
 		var _player = Registry._player;
+		
 		//upperleft of player
 		if (x < _player.x && y < _player.y) { 
 			
 			//TODO replace with pathfinding
-			//FlxVelocity.moveTowardsPoint(this, _UL, Std.int(speed));
 			followPath(_UL);
-			
 		} 
 		
 		//upperright of player
 		else if (x >= _player.x && y < _player.y) { 
-			//FlxVelocity.moveTowardsPoint(this, _UR, Std.int(speed));
 			followPath(_UR);
-
 		} 
 		
 		//downleft of player
 		else if (x <= _player.x && y > _player.y) { 
-			//FlxVelocity.moveTowardsPoint(this, _DL, Std.int(speed));	
 			followPath(_DL);
-
 		} 
 		
 		//downright of player
 		else if (x > _player.x &&  y > _player.y) { 
-			//FlxVelocity.moveTowardsPoint(this, _DR, Std.int(speed));
 			followPath(_DR);
 		}
 	}
@@ -290,18 +310,18 @@ class Enemy extends FlxSprite
 	}
 	
 	override public function destroy():Void 
-	{
-		
-		_going4it = false;
+	{	
+		//_going4itFlag = false;
 		super.destroy();
-		
 		
 		//_sndStep = FlxDestroyUtil.destroy(_sndStep);
 	}
 	
 	public function go4it():Void
 	{
-		_going4it = true;
+		FlxG.camera.shake(0.02, 0.2);
+		Registry._sndAlert.play();
+		_going4itFlag = true;
 		chase();
 	}
 	
