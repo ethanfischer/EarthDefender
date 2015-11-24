@@ -5,14 +5,18 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxState;
+import flixel.FlxSprite;
+
 import flixel.group.FlxTypedGroup;
 import flixel.system.FlxSound;
 import flixel.tile.FlxTilemap;
 import flixel.ui.FlxVirtualPad;
 import flixel.util.FlxColor;
+import flixel.util.FlxMath;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxPoint;
 import lime.math.Rectangle;
+import openfl.geom.Point;
 using flixel.util.FlxSpriteUtil;
 import flixel.util.FlxRect;
 
@@ -28,7 +32,6 @@ import flixel.util.FlxRect;
  */
 class PlayState extends FlxState
 {
-	//FlxG.log.redirectTraces = true;
 	
 	private var _player:Player;
 	private var _map:FlxOgmoLoader;
@@ -47,13 +50,13 @@ class PlayState extends FlxState
 	private var _sndCoin:FlxSound;
 	private var _sndEnmHit:FlxSound;
 	private var _sndAlert:FlxSound;
-	private var _sndGameover:FlxSound;
 	
-	private var _coin:Coin;
+	private var _earth:Earth;
 	private var _enmSpawner:EnemySpawner;
-	private var _enmHotspot:FlxObject;
-	private var _spnTimer:Float = 15;
+	private var _enmHotspot:FlxSprite;
+	private var _spnTimer:Float = 2;
 	
+	private var _tooLate:Bool = false; //flag used to make sure camera flashes to you losing only once
 	
 	#if mobile
 	public static var virtualPad:FlxVirtualPad;
@@ -64,17 +67,21 @@ class PlayState extends FlxState
 	 */
 	override public function create():Void
 	{
+		FlxG.log.redirectTraces = true;
+		
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.visible = false;
 		#end
 		
-		_map = new FlxOgmoLoader(AssetPaths.room_002d__oel);
-		Registry._map = _map;
+		_map = new FlxOgmoLoader(AssetPaths.room_002e__oel);
+		Registry._map = _map; //this Registry.map is important and depended on by other classes
+		
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 16, 16, "walls");
 		_mWalls.setTileProperties(1, FlxObject.NONE);
 		_mWalls.setTileProperties(2, FlxObject.ANY);
 		_mWalls.setTileProperties(3, FlxObject.NONE);
 	
+		Registry._mWalls = _mWalls;
 		add(_mWalls);
 		
 		//_grpCoins = new FlxTypedGroup<Coin>();
@@ -86,15 +93,22 @@ class PlayState extends FlxState
 		//EnemySpawner
 		_grpEnemies = new FlxTypedGroup<Enemy>();
 		_enmSpawner = new EnemySpawner();
-		var _enm:Enemy = _enmSpawner.spawn();
-		_grpEnemies.add(_enm);
+		//var _enm:Enemy = _enmSpawner.spawn(); //first enemy spawned
+		//_grpEnemies.add(_enm);
+		
 		add(_grpEnemies);
 		
 		_map.loadEntities(placeEntities, "entities");
-		add(_coin);
+		add(_earth);
+		Registry._earth = _earth;
+		Registry._earthPos = new FlxPoint(Registry._earth.x, Registry._earth.y);
 		
 		FlxG.camera.follow(_player, FlxCamera.STYLE_LOCKON);
-		FlxG.camera.setBounds(0, 0, 1000, 1000);
+		FlxG.camera.setBounds(0, 0, 1500, 1500); //Tags: IMPORTANT, LEVEL BOUNDARIES, STAGE BOUNDARIES, 
+		
+		//only if you want to see it
+		//add(_enmHotspot);
+		
 		
 		_hud = new HUD();
 		add(_hud);
@@ -105,7 +119,7 @@ class PlayState extends FlxState
 		//_sndCoin = FlxG.sound.load(AssetPaths.coin__wav);
 		_sndEnmHit = FlxG.sound.load(AssetPaths.miss__wav);
 		_sndAlert = FlxG.sound.load(AssetPaths.hurt__wav);
-		_sndGameover = FlxG.sound.load(AssetPaths.lose__wav);
+		Registry._sndAlert = _sndAlert;
 		
 		#if mobile
 		virtualPad = new FlxVirtualPad(FULL, NONE);		
@@ -130,12 +144,17 @@ class PlayState extends FlxState
 		}
 		else if (entityName == "coin")
 		{
-			_coin = new Coin(x + 4, y + 4);
+			_earth = new Earth(x + 4, y + 4);
 			
 		}
 		else if (entityName == "hotspot")
 		{
-			_enmHotspot = new FlxObject(Std.int(x),Std.int(y), 224, 224);
+			_enmHotspot = new FlxSprite(Std.int(x), Std.int(y));
+			_enmHotspot.width = 960;
+			_enmHotspot.height = 960;
+			_enmHotspot.makeGraphic(960, 960, FlxColor.WHITE);
+			_enmHotspot.alpha = .2;
+			Registry._enmHotspot = _enmHotspot;
 		}
 	}
 	
@@ -165,14 +184,15 @@ class PlayState extends FlxState
 	override public function update():Void
 	{
 		super.update();
-		
+	
 		spawnTimer();
 
 		//////////////////////////////////////////////////////////////////////
 		//							TESTING									//
 		//////////////////////////////////////////////////////////////////////
 		
-		
+		//TESTING PURPOSES:
+		if (FlxG.keys.anyPressed(["g"])) FlxG.camera.follow(_player);
 		//FlxG.log.redirectTraces = true;
 		//trace("TESTING:\n \t");
 		//trace(_map.width + " " + _map.height);
@@ -186,16 +206,18 @@ class PlayState extends FlxState
 			return;
 		}
 		
-		
+	 
 		
 		
 		//FlxG.log.redirectTraces = true;
 		//FlxG.overlap(_mWalls, _player, collideFunction);
 		//FlxG.overlap(_player, _grpCoins, playerTouchCoin);
 		FlxG.collide(_grpEnemies, _mWalls);
-		FlxG.collide(_grpEnemies, _coin, endGame);
+		FlxG.collide(_grpEnemies, _earth, endGame);
 		FlxG.overlap(_player, _grpEnemies, playerTouchEnemy);
-		FlxG.overlap(_grpEnemies, _enmHotspot, enmTouchHotspot);
+		//FlxG.overlap(_grpEnemies, _enmHotspot, enmTouchHotspot,);
+		FlxG.overlap(_grpEnemies, _earth._tooLateBox, enmTouchTooLateBox);
+
 		_grpEnemies.forEachAlive(checkEnemyVision);
 		
 		
@@ -251,10 +273,11 @@ class PlayState extends FlxState
 		if (P.alive && P.exists && E.alive && E.exists && !E.isFlickering())
 		{
 			E.kill();
+			_grpEnemies.remove(E);
 			_sndEnmHit.play();
 			_kills++;
 			_hud.updateHUD(_kills);
-			spawnEnemy();
+			_spnTimer -= 5;// maybe don't always spawn the enemy right away
 		}
 	}
 	
@@ -271,14 +294,15 @@ class PlayState extends FlxState
 	
 	private function checkEnemyVision(e:Enemy):Void
 	{
-		if (_mWalls.ray(e.getMidpoint(), _player.getMidpoint()))
-		{
-			e.seesPlayer = true;
-			e.coinPos.copyFrom(new FlxPoint(_coin.x, _coin.y));
-		}
+		//if (_mWalls.ray(e.getMidpoint(), _player.getMidpoint()))
+		//{
+			if (e.isOnScreen()) e.seesPlayer = true;
+			//e.earthPos.copyFrom(new FlxPoint(_earth.x, _earth.y));
+		//}
 		else
 			e.seesPlayer = false;		
 	}
+	
 	
 	//private function playerTouchCoin(P:Player, C:Coin):Void
 	//{
@@ -303,24 +327,28 @@ class PlayState extends FlxState
 		_spnTimer -= FlxG.elapsed;
 		if (_spnTimer <= 0)
 		{
-			spawnEnemy();
-			_spnTimer = 45;
+			if(_grpEnemies.length < 5) spawnEnemy();
+			_spnTimer = 10;
 		}
 	}
 
-	private function endGame(E:Enemy, C:Coin):Void
+	private function endGame(E:Enemy, C:Earth):Void
 	{
-		_sndGameover.play();
 		_ending = true;
 	}
 	
-	private function enmTouchHotspot(E:Enemy, HtSp:FlxObject):Void
+	
+	
+	private function enmTouchTooLateBox(E:Enemy, TLB:FlxObject):Void
 	{
-		if (!E.getHtspFlag())
+		if (!_tooLate)
 		{
-			E.go4it();
-			_sndAlert.play();
-			E.setHtspFlag(true);
+			if (!_earth.isOnScreen()) 
+			{
+				FlxG.camera.follow(_earth);
+				FlxG.camera.flash(FlxColor.BLACK, .04);
+				_tooLate = true;
+			}
 		}
 	}
 }

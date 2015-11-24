@@ -8,33 +8,40 @@ import flixel.util.FlxAngle;
 import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
+import flixel.util.FlxRect;
+import flixel.util.FlxMath;
 import flixel.util.FlxVelocity;
 using flixel.util.FlxSpriteUtil;
+import flixel.tile.FlxTilemap;
+import flixel.util.FlxColor;
+import flixel.util.FlxPath;
 import flixel.addons.editors.ogmo.FlxOgmoLoader;
 
 /*
  * TODO
  * 
- * -make enemies move tile-by-tile
- * -make enemies hide in shadows when they see you
- * -make enemies run when you get close to them
- * -implement path finding for getting to the globe, moving away from player
+ * -make enemies smarter:
+ * 		-hide in shadows
+ * 		-wait until you are away from the globe
+ * 
  * 
 */
 
 class Enemy extends FlxSprite
 {
-	public var speed:Float = 80;
+	public var _speed:Float = 100;
 	public var etype(default, null):Int;
 	private var _brain:FSM;
 	private var _idleTmr:Float;
 	private var _moveDir:Float;
 	public var seesPlayer:Bool = false;
 	public var playerPos(default, null):FlxPoint;
-	public var coinPos(default, null):FlxPoint;
-	private var _going4it:Bool = false;
+	//public var coinPos(default, null):FlxPoint;
+	private var _going4itFlag:Bool = false;
 	private var _player:Player;
 	private var _htspFlag:Bool = false;
+	
+	private var _pathSetter:FlxPath = new FlxPath(); //I guess a FlxPath object makes your object follow a path. Seems backwards to me, but whatever
 
 	
 	//corners of the map used for moving away from the player
@@ -42,6 +49,15 @@ class Enemy extends FlxSprite
 	private var _UR:FlxPoint; //upright
 	private var _DL:FlxPoint; //downleft
 	private var _DR:FlxPoint; //downright
+	
+	private var _path:Array<FlxPoint> = new Array();
+	private var _chaseFlag:Bool = false;
+	private var _goal:FlxPoint = new FlxPoint( -100, -100); //intialize at this so its not null. Goal is updated each time you make a new path
+	
+	private var _go4itTimer:Float = 0;
+	private var _closeCallFlag:Bool = false; //once the enemy is going4it, once they're on screen they should go a little faster, but only update speed once
+	//private var _visionBox:FlxRect;
+
 	
 	//private var _sndStep:FlxSound;
 	
@@ -56,6 +72,7 @@ class Enemy extends FlxSprite
 		//animation.add("lr", [3, 4, 3, 5], 6, false);
 		//animation.add("u", [6, 7, 6, 8], 6, false);
 		//drag.x = drag.y = 10;
+		
 		width = 16;
 		height = 16;
 		_brain = new FSM(chase);
@@ -64,13 +81,14 @@ class Enemy extends FlxSprite
 		scrollFactor.x = 1;
 		scrollFactor.y = 1;
 		
-		_UL = new FlxPoint(0, 0);
-		_UR = new FlxPoint(Registry._map.width, 0);
-		_DL = new FlxPoint(0, Registry._map.height);
-		_DR = new FlxPoint(Registry._map.width, Registry._map.height);
+		//hard-coded for now, TODO use _spnPts
+		_UL = new FlxPoint(32, 32);
+		_UR = new FlxPoint(1456, 32);
+		_DL = new FlxPoint(32, 1456);
+		_DR = new FlxPoint(1456, 1456);
 		
-		coinPos = FlxPoint.get();
-		
+		//coinPos = FlxPoint.get();
+
 		//_sndStep = FlxG.sound.load(AssetPaths.step__wav,.4);
 		//_sndStep.proximity(x,y,FlxG.camera.target, FlxG.width *.6);
 	}
@@ -81,6 +99,9 @@ class Enemy extends FlxSprite
 			//return;
 		_brain.update();
 		super.update();
+		
+		if (overlaps(Registry._enmHotspot)) enmTouchHotspot();
+		
 	
 		//if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
 		//{
@@ -113,7 +134,7 @@ class Enemy extends FlxSprite
 			////else
 			////{
 				////_moveDir = FlxRandom.intRanged(0, 8) * 45;
-				////FlxAngle.rotatePoint(speed * .5, 0, 0, 0, _moveDir, velocity);
+				////FlxAngle.rotatePoint(spe^&^&ed * .5, 0, 0, 0, _moveDir, velocity);
 				////
 			////}
 			////_idleTmr = FlxRandom.intRanged(1, 4);			
@@ -126,28 +147,94 @@ class Enemy extends FlxSprite
 	public function chase():Void
 	{
 		
-		if (seesPlayer && !_going4it) //TODO if in shadows, be idle. Otherwise, flee! FOr now, if sees player, flee!
+		if (seesPlayer && !_going4itFlag) //TODO if in shadows, be idle. Otherwise, flee! FOr now, if sees player, flee!
 		{
 			//TODO hide in shadows
+			_brain.activeState = flee;
 			flee();
 		}
 		else
 		{	
+			if (_going4itFlag)
+			{
+				if (isOnScreen() && !_closeCallFlag) //TODO: needs to update 
+				{
+					_speed = 110; //this difference in _speed makes for more 'close calls' and thus more excitement hopefully
+					_goal = new FlxPoint(Registry._earthPos.x, Registry._earthPos.y + 1); //have to reset goal so it will update followpath with new speed
+					_closeCallFlag = true;
+				}
+				else _speed = 80; //slightly slower than their straif/retreat _speed	
+			}			
 			_brain.activeState = chase;
-			FlxVelocity.moveTowardsPoint(this, coinPos, Std.int(speed));
+			followPath(Registry._earthPos);
 		}
+	}
+	
+	private function enmTouchHotspot():Void
+	{
+		//if (!FlxG.keys.anyPressed(["g"])) FlxG.camera.follow(this); //For testing purposes, to see where they are when they contact the perimeter
+		
+		var d:Float = FlxMath.getDistance(new FlxPoint(Registry._player.x, Registry._player.y), new FlxPoint(x, y));
+		//trace(d);
+		
+		if (_go4itTimer < 4 && !_going4itFlag) hide();
+		
+		if (d > 1000) //if player is sufficiently far enough away 
+		{
+			_go4itTimer += FlxG.elapsed; //count how long they are far enough away
+			if (_go4itTimer > 3 && !_going4itFlag)
+			{
+				go4it();
+			}
+		}
+		else _go4itTimer = 0; //if player comes in range, reset the go4ittimer
+		
+	
+		
 	}
 	
 	public function flee():Void
 	{
-		if (seesPlayer)
+		if (seesPlayer && !_going4itFlag)
 		{
 			_brain.activeState = flee;
-			
+			_speed = 100;
 			moveAwayFromPlayer();
 		} else
 		{
+			_brain.activeState = chase;
 			chase();
+		}
+	}
+	
+	public function hide():Void
+	{
+		//TODO, make them seek the nearest shadow and wait there
+		//for now, wait at the perimeter
+		if (seesPlayer && !_going4itFlag) 
+		{
+			flee();
+			_brain.activeState = flee;
+		}
+		else
+		{
+			_brain.activeState = hide;
+			_pathSetter.cancel(); //stop from moving
+			_goal = new FlxPoint(x, y); //have to set goal to something so when chase is called again, it will follow the path again
+		}
+	}
+	
+	private function followPath(i_goal:FlxPoint):Void
+	{
+		if (i_goal != _goal) //if you've already established a path, don't do it again until it's new path (new goal)
+		{
+			_goal = i_goal;
+			_path = Registry._mWalls.findPath(new FlxPoint(x,y), _goal);
+			
+			if (_path != null)
+			{	
+				_pathSetter.start(this, _path, _speed);
+			}
 		}
 	}
 	
@@ -170,7 +257,6 @@ class Enemy extends FlxSprite
 				else
 					facing = FlxObject.DOWN;
 			}
-			
 			//switch(facing)
 			//{
 				//case FlxObject.LEFT, FlxObject.RIGHT:
@@ -183,7 +269,6 @@ class Enemy extends FlxSprite
 					//animation.play("d");
 			//}
 		}
-			
 		super.draw();
 	}
 	
@@ -191,25 +276,27 @@ class Enemy extends FlxSprite
 	{
 		//TODO make movement smarter/use path finding to get enemy to avoid colliding with walls
 		var _player = Registry._player;
+		
 		//upperleft of player
 		if (x < _player.x && y < _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _UL, Std.int(speed));
 			
+			//TODO replace with pathfinding
+			followPath(_UL);
 		} 
 		
 		//upperright of player
 		else if (x >= _player.x && y < _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _UR, Std.int(speed));
+			followPath(_UR);
 		} 
 		
 		//downleft of player
 		else if (x <= _player.x && y > _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _DL, Std.int(speed));			
+			followPath(_DL);
 		} 
 		
 		//downright of player
 		else if (x > _player.x &&  y > _player.y) { 
-			FlxVelocity.moveTowardsPoint(this, _DR, Std.int(speed));
+			followPath(_DR);
 		}
 	}
 	
@@ -223,7 +310,8 @@ class Enemy extends FlxSprite
 	}
 	
 	override public function destroy():Void 
-	{
+	{	
+		//_going4itFlag = false;
 		super.destroy();
 		
 		//_sndStep = FlxDestroyUtil.destroy(_sndStep);
@@ -231,15 +319,17 @@ class Enemy extends FlxSprite
 	
 	public function go4it():Void
 	{
-		_going4it = true;
+		FlxG.camera.shake(0.02, 0.2);
+		Registry._sndAlert.play();
+		_going4itFlag = true;
 		chase();
 	}
 	
-	public function getHtspFlag():Bool
+	public function getHtspFlag():Bool //get hotspot flag
 	{
 		return _htspFlag;
 	}
-	public function setHtspFlag(b:Bool):Void
+	public function setHtspFlag(b:Bool):Void //hotspot flag
 	{
 		_htspFlag = b;
 	}
