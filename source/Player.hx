@@ -10,6 +10,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 import flixel.tile.FlxTile;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxPoint;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +85,8 @@ class Player extends FlxSprite
 	
 	
 	private var _mWalls:FlxTilemap;
+	private var _playerPos:FlxPoint = new FlxPoint(0, 0);
+
 	
 	
 	/**
@@ -331,6 +334,8 @@ class Player extends FlxSprite
 	{
 		movement(); //movement is a TurnBasedRPG function
 		super.update();
+		_playerPos.x = x;
+		_playerPos.y = y;
 	}
 	
 	override public function destroy():Void 
@@ -338,6 +343,11 @@ class Player extends FlxSprite
 		super.destroy();
 		
 		_sndStep = FlxDestroyUtil.destroy(_sndStep);
+	}
+	
+	public function getPlayerPos():FlxPoint
+	{
+		return _playerPos;
 	}
 	
 

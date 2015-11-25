@@ -19,6 +19,8 @@ class Registry
 		public static var _earthPos:FlxPoint; 
 		public static var _enmHotspot:FlxSprite;
 		public static var _sndAlert:FlxSound;
+		
+		
 
 		public function Registry() 
 		{

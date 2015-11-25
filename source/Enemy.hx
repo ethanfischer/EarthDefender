@@ -21,9 +21,15 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
  * TODO
  * 
  * -make enemies smarter:
- * 		-hide in shadows
- * 		-wait until you are away from the globe
- * 
+ * 		-hide in shadows/grass
+ * 		-when you are beyond their patch, they dash for it
+ * 		-move patch by patch, instead of directly to perimeter
+ * 		-run away even in hotspot if you see them
+ * 		-when they touch the earth, they suck the life out of it. You are only notified when they are sucking (like a mosquito), maybe not even notified
+ * 		-make these guys pesky. Hard to catch. When they run away, they hide and are hard to find
+ * 		-run off the map and return after you're gone for 10 seconds or something
+ * 		-unique identities?
+ * 		-only go4it when you've chased another enemy off the map (and then only sometimes, not predicably), or passed it significantly
  * 
 */
 
@@ -56,7 +62,13 @@ class Enemy extends FlxSprite
 	
 	private var _go4itTimer:Float = 0;
 	private var _closeCallFlag:Bool = false; //once the enemy is going4it, once they're on screen they should go a little faster, but only update speed once
+	
+	private var _enmPos:FlxPoint = new FlxPoint(0, 0);
 	//private var _visionBox:FlxRect;
+	
+	private var _corner:FlxPoint = new FlxPoint(0,0);
+	
+	private static inline var G4ITTHRESHOLD:Int = 15; //once enemy has been alive for longer than this, should go 4 it
 
 	
 	//private var _sndStep:FlxSound;
@@ -87,6 +99,9 @@ class Enemy extends FlxSprite
 		_DL = new FlxPoint(32, 1456);
 		_DR = new FlxPoint(1456, 1456);
 		
+		_player = Registry._player;
+
+		
 		//coinPos = FlxPoint.get();
 
 		//_sndStep = FlxG.sound.load(AssetPaths.step__wav,.4);
@@ -100,7 +115,39 @@ class Enemy extends FlxSprite
 		_brain.update();
 		super.update();
 		
+		_enmPos.x = x; //update position variable
+		_enmPos.y = y;
+		
 		if (overlaps(Registry._enmHotspot)) enmTouchHotspot();
+		
+		
+		
+		//TODO put this in a function
+		if (getQuadrant(this) == getQuadrant(_player)) 
+		{
+			var pDist:Float = FlxMath.getDistance(new FlxPoint(Registry._player.x, Registry._player.y), Registry._earthPos); //player distance from earth
+			var eDist:Float = FlxMath.getDistance(new FlxPoint(x, y), Registry._earthPos); //enemy distance from earth
+
+			if (pDist > eDist && !_going4itFlag) 
+			{
+				go4it(false);
+				_going4itFlag = true;
+			}
+		}
+		else
+		{		
+			//TODO put this in a function
+			var d:Float = FlxMath.getDistance(new FlxPoint(Registry._player.x, Registry._player.y), Registry._earthPos);
+			if (d > 500)
+			{
+				_go4itTimer += FlxG.elapsed;
+				if (_go4itTimer > G4ITTHRESHOLD && !_going4itFlag)
+				{
+					go4it();
+					_going4itFlag = true;
+				}
+			}
+		}
 		
 	
 		//if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE)
@@ -177,17 +224,18 @@ class Enemy extends FlxSprite
 		var d:Float = FlxMath.getDistance(new FlxPoint(Registry._player.x, Registry._player.y), new FlxPoint(x, y));
 		//trace(d);
 		
-		if (_go4itTimer < 4 && !_going4itFlag) hide();
+		//if (_go4itTimer < 4 && 
+		if(!_going4itFlag) hide();
 		
-		if (d > 1000) //if player is sufficiently far enough away 
-		{
-			_go4itTimer += FlxG.elapsed; //count how long they are far enough away
-			if (_go4itTimer > 3 && !_going4itFlag)
-			{
-				go4it();
-			}
-		}
-		else _go4itTimer = 0; //if player comes in range, reset the go4ittimer
+		//if (d > 1000) //if player is sufficiently far enough away 
+		//{
+			//_go4itTimer += FlxG.elapsed; //count how long they are far enough away
+			//if (_go4itTimer > 3 && !_going4itFlag)
+			//{
+				//go4it();
+			//}
+		//}
+		//else _go4itTimer = 0; //if player comes in range, reset the go4ittimer
 		
 	
 		
@@ -221,7 +269,7 @@ class Enemy extends FlxSprite
 			_brain.activeState = hide;
 			_pathSetter.cancel(); //stop from moving
 			_goal = new FlxPoint(x, y); //have to set goal to something so when chase is called again, it will follow the path again
-		}
+		}		
 	}
 	
 	private function followPath(i_goal:FlxPoint):Void
@@ -273,31 +321,21 @@ class Enemy extends FlxSprite
 	}
 	
 	private function moveAwayFromPlayer():Void
-	{
-		//TODO make movement smarter/use path finding to get enemy to avoid colliding with walls
-		var _player = Registry._player;
-		
-		//upperleft of player
-		if (x < _player.x && y < _player.y) { 
-			
-			//TODO replace with pathfinding
-			followPath(_UL);
-		} 
-		
-		//upperright of player
-		else if (x >= _player.x && y < _player.y) { 
-			followPath(_UR);
-		} 
-		
-		//downleft of player
-		else if (x <= _player.x && y > _player.y) { 
-			followPath(_DL);
-		} 
-		
-		//downright of player
-		else if (x > _player.x &&  y > _player.y) { 
-			followPath(_DR);
+	{		
+		if (x < _player.x && y < _player.y) { //upperleft of player
+			_corner = _UL;
+		} else if (x >= _player.x && y < _player.y) { //upright of player
+			_corner = _UR;
+		} else if (x <= _player.x && y > _player.y) { //downleft of player
+			_corner = _DL;
+		} else if (x > _player.x &&  y > _player.y) { //downright of player
+			_corner = _DR;
 		}
+		
+		followPath(_corner);
+		var d:Float = FlxMath.getDistance(Registry._player.getPlayerPos(), _enmPos); //distance between player and enemy
+
+		if (_pathSetter.finished && d < 200) go4it(false); 
 	}
 	
 	public function changeEnemy(EType:Int):Void
@@ -317,10 +355,13 @@ class Enemy extends FlxSprite
 		//_sndStep = FlxDestroyUtil.destroy(_sndStep);
 	}
 	
-	public function go4it():Void
+	public function go4it(b:Bool = true):Void
 	{
-		FlxG.camera.shake(0.02, 0.2);
-		Registry._sndAlert.play();
+		if (b)
+		{
+			FlxG.camera.shake(0.02, 0.2);
+			Registry._sndAlert.play();
+		}
 		_going4itFlag = true;
 		chase();
 	}
@@ -334,56 +375,27 @@ class Enemy extends FlxSprite
 		_htspFlag = b;
 	}
 	
-	//TODO maybe use this for enemy movement to be like player movement
-	//public function moveTo(Direction:MoveDirection):Void //TODO
-	//{
-		///*Only change direction if not already moving*/
-		//if (!moveToNextTile)
-		//{
-			//var tile:Int;
-			//
-			///*Check next tile relative to player's current tile and movement direction. If solid, don't allow movement
-			//get tile moving to, based on players current tile and movedirection*/
-			//
-			///*cardinal*/
-			//if (Direction == MoveDirection.UPTAP || Direction ==  MoveDirection.UPHOLD)
-			//{
-				//tile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
-			//} else if (Direction == MoveDirection.DOWNTAP || Direction == MoveDirection.DOWNHOLD)
-			//{
-				//tile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y + TILE_SIZE)/TILE_SIZE));
-			//} else if (Direction == MoveDirection.LEFTTAP || Direction == MoveDirection.LEFTHOLD)
-			//{
-				//tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int(y/TILE_SIZE));
-			//} else if (Direction == MoveDirection.RIGHTTAP || Direction == MoveDirection.RIGHTHOLD)
-			//{
-				//tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int(y/TILE_SIZE));
-			//} 
-			//
-			///*diagonal*/
-			//else if (Direction ==  MoveDirection.UPRIGHTHOLD)
-			//{
-				//tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
-			//} else if (Direction == MoveDirection.UPLEFTHOLD)
-			//{
-				//tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
-			//} else if (Direction == MoveDirection.DOWNRIGHTHOLD)
-			//{
-				//tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int((y+TILE_SIZE)/TILE_SIZE));
-			//} else
-			//{
-				//tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int((y+TILE_SIZE)/TILE_SIZE));
-			//} 
-				//
-			////if tile is collidible, don't move
-			//if (tile == 2) 
-			//{
-				///*TODO deallocate memory for tile*/
-				//return;
-			//}
-		//
-			//moveDirection = Direction;
-			//moveToNextTile = true;
-		//}
-	//}
+	/*
+	 * @returns flxpoint the object is closest to
+	 */
+	public function getQuadrant(fs:FlxSprite):FlxPoint
+	{
+		var e = Registry._earth;
+		
+		if (fs.y < e.y){
+			if (fs.x < e.x) return _UL;
+			else return _UR;
+		} 
+		else {
+			if (fs.x < e.x) return _DL;
+			else return _DR;
+		}
+	}
+	
+	public function getEnmPos():FlxPoint
+	{
+		return _enmPos;
+	}
+	
+	
 }

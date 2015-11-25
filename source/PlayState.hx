@@ -56,6 +56,7 @@ class PlayState extends FlxState
 	private var _enmHotspot:FlxSprite;
 	private var _spnTimer:Float = 2;
 	
+	
 	private var _tooLate:Bool = false; //flag used to make sure camera flashes to you losing only once
 	
 	#if mobile
@@ -73,7 +74,7 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
-		_map = new FlxOgmoLoader(AssetPaths.room_002e__oel);
+		_map = new FlxOgmoLoader(AssetPaths.room_002f__oel);
 		Registry._map = _map; //this Registry.map is important and depended on by other classes
 		
 		_mWalls = _map.loadTilemap(AssetPaths.tiles__png, 16, 16, "walls");
@@ -185,6 +186,7 @@ class PlayState extends FlxState
 	{
 		super.update();
 	
+		
 		spawnTimer();
 
 		//////////////////////////////////////////////////////////////////////
@@ -328,7 +330,7 @@ class PlayState extends FlxState
 		if (_spnTimer <= 0)
 		{
 			if(_grpEnemies.length < 5) spawnEnemy();
-			_spnTimer = 10;
+			_spnTimer = 15;
 		}
 	}
 

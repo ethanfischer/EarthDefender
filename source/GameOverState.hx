@@ -47,12 +47,12 @@ class GameOverState extends FlxState
 		_sndGameover = FlxG.sound.load(AssetPaths.lose__wav);
 		_sndGameover.play();
 				
-		_txtTitle = new FlxText(0, 20, 0, _win ? "You Win!" : "Game Over!", 22);
-		_txtTitle.alignment = "center";
-		_txtTitle.screenCenter(true, false);
-		add(_txtTitle);
+		//_txtTitle = new FlxText(0, 20, 0, _win ? "You Win!" : "Game Over!", 22);
+		//_txtTitle.alignment = "center";
+		//_txtTitle.screenCenter(true, false);
+		//add(_txtTitle);
 		
-		_txtMessage = new FlxText(0, (FlxG.height / 2) - 18, 0, "Score: " + Std.string(_score), 8);
+		_txtMessage = new FlxText(0, (FlxG.height / 3) - 18, 0, "Score: " + Std.string(_score), 8);
 		_txtMessage.alignment = "center";
 		_txtMessage.size = 16;
 		_txtMessage.screenCenter(true, false);
@@ -69,7 +69,7 @@ class GameOverState extends FlxState
 		//update hiscore if applicable
 		if (_score > Registry._hiScore) Registry._hiScore = _score;
 		
-		_txtHiScore = new FlxText(0, (FlxG.height / 2), 0, "Best: " + Std.string(Registry._hiScore) + "\n\n\n\n\nPress Spacebar", 8);
+		_txtHiScore = new FlxText(0, (FlxG.height / 3), 0, "Best: " + Std.string(Registry._hiScore), 8);
 		_txtHiScore.alignment = "center";
 		_txtHiScore.size = 16;
 		_txtHiScore.screenCenter(true, false);
@@ -87,7 +87,7 @@ class GameOverState extends FlxState
 	
 	override public function update():Void
 	{
-		if (FlxG.keys.anyPressed(["SPACE", "ENTER"]))
+		if (FlxG.keys.anyPressed(["SPACE", "ENTER", "LEFT", "RIGHT", "UP", "DOWN", "W", "A", "S", "D"]))
 		{
 			replay();
 		}
