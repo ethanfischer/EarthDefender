@@ -281,48 +281,125 @@ class Player extends FlxSprite
 		{
 			var tile:Int;
 			
+			function diagonalCheck(_d1:MoveDirection, _d2:MoveDirection):Int
+			{
+				var _dTile1:Int = 99;
+				var _dTile2:Int = 99;
+				
+				//function switchCheck(_d:MoveDirection, _dTile:Int):Void
+				//{
+					//switch (_d)
+					//{
+						//case UPHOLD:	
+							//_dTile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y - TILE_SIZE) / TILE_SIZE));
+						//case DOWNHOLD:
+							//_dTile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y + TILE_SIZE) / TILE_SIZE));
+						//case RIGHTHOLD:
+							//_dTile = _mWalls.getTile(Std.int((x + TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+						//case LEFTHOLD:
+							//_dTile = _mWalls.getTile(Std.int((x - TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+						//default:
+							//return;
+					//}
+				//}
+				
+				//switchCheck(_d1, _dTile1);
+				//switchCheck(_d2, _dTile2);
+				
+				switch (_d1)
+					{
+						case UPHOLD:	
+							_dTile1 = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y - TILE_SIZE) / TILE_SIZE));
+						case DOWNHOLD:
+							_dTile1 = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y + TILE_SIZE) / TILE_SIZE));
+						case RIGHTHOLD:
+							_dTile1 = _mWalls.getTile(Std.int((x + TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+						case LEFTHOLD:
+							_dTile1 = _mWalls.getTile(Std.int((x - TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+						default:
+							return 1; //returning 1 exits the moveTo function
+					}
+				switch (_d2)
+					{
+						case UPHOLD:	
+							_dTile2 = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y - TILE_SIZE) / TILE_SIZE));
+						case DOWNHOLD:
+							_dTile2 = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y + TILE_SIZE) / TILE_SIZE));
+						case RIGHTHOLD:
+							_dTile2 = _mWalls.getTile(Std.int((x + TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+						case LEFTHOLD:
+							_dTile2 = _mWalls.getTile(Std.int((x - TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+						default:
+							return 1;
+					}	
+				
+				if (_dTile1 != 2 && _dTile2 != 2) return 1; //if neither first nor second tile are colliable, return 1 (1 is used where diagCheck is called to return)
+				else if (_dTile1 != 2) Direction = _d1; //if first direction isn't collidable, go up 
+				else if (_dTile2 != 2) Direction = _d2;
+				
+				return 0;
+			}
+			
 			/*Check next tile relative to player's current tile and movement direction. If solid, don't allow movement
 			get tile moving to, based on players current tile and movedirection*/
 			
 			/*cardinal*/
 			if (Direction == MoveDirection.UPTAP || Direction ==  MoveDirection.UPHOLD)
 			{
-				tile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
-			} else if (Direction == MoveDirection.DOWNTAP || Direction == MoveDirection.DOWNHOLD)
+				tile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y - TILE_SIZE) / TILE_SIZE));
+				if (tile == 2) return;
+			} 
+			else if (Direction == MoveDirection.DOWNTAP || Direction == MoveDirection.DOWNHOLD)
 			{
-				tile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y + TILE_SIZE)/TILE_SIZE));
-			} else if (Direction == MoveDirection.LEFTTAP || Direction == MoveDirection.LEFTHOLD)
+				tile = _mWalls.getTile(Std.int(x / TILE_SIZE), Std.int((y + TILE_SIZE) / TILE_SIZE));
+				if (tile == 2) return;
+			} 
+			else if (Direction == MoveDirection.LEFTTAP || Direction == MoveDirection.LEFTHOLD)
 			{
-				tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int(y/TILE_SIZE));
-			} else if (Direction == MoveDirection.RIGHTTAP || Direction == MoveDirection.RIGHTHOLD)
+				tile = _mWalls.getTile(Std.int((x - TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+				if (tile == 2) return;
+			} 
+			else if (Direction == MoveDirection.RIGHTTAP || Direction == MoveDirection.RIGHTHOLD)
 			{
-				tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int(y/TILE_SIZE));
+				tile = _mWalls.getTile(Std.int((x + TILE_SIZE) / TILE_SIZE), Std.int(y / TILE_SIZE));
+				if (tile == 2) return;
 			} 
 			
 			/*diagonal*/
 			else if (Direction ==  MoveDirection.UPRIGHTHOLD)
 			{
-				tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
+				tile = _mWalls.getTile(Std.int((x + TILE_SIZE) / TILE_SIZE), Std.int((y - TILE_SIZE) / TILE_SIZE));
+				if (tile == 2) 
+				{
+					if (diagonalCheck(UPHOLD, RIGHTHOLD) == 1) return; //call diagonalCheck and if it returns 1, exit this function
+				}
 			} else if (Direction == MoveDirection.UPLEFTHOLD)
 			{
-				tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int((y - TILE_SIZE)/TILE_SIZE));
+				tile = _mWalls.getTile(Std.int((x - TILE_SIZE) / TILE_SIZE), Std.int((y - TILE_SIZE) / TILE_SIZE));
+				if (tile == 2) 
+				{
+					if (diagonalCheck(UPHOLD, LEFTHOLD) == 1) return;
+				}
 			} else if (Direction == MoveDirection.DOWNRIGHTHOLD)
 			{
-				tile = _mWalls.getTile(Std.int((x+TILE_SIZE)/TILE_SIZE), Std.int((y+TILE_SIZE)/TILE_SIZE));
+				tile = _mWalls.getTile(Std.int((x + TILE_SIZE) / TILE_SIZE), Std.int((y + TILE_SIZE) / TILE_SIZE));
+				if (tile == 2) 
+				{
+					if(diagonalCheck(DOWNHOLD, RIGHTHOLD) == 1) return;
+				}
 			} else
 			{
-				tile = _mWalls.getTile(Std.int((x-TILE_SIZE)/TILE_SIZE), Std.int((y+TILE_SIZE)/TILE_SIZE));
+				tile = _mWalls.getTile(Std.int((x - TILE_SIZE) / TILE_SIZE), Std.int((y + TILE_SIZE) / TILE_SIZE));
+				if (tile == 2) 
+				{
+					if (diagonalCheck(DOWNHOLD, LEFTHOLD) == 1) return;
+				}
 			} 
 				
-			//if tile is collidible, don't move
-			if (tile == 2) 
-			{
-				/*TODO deallocate memory for tile*/
-				return;
-			}
-		
 			moveDirection = Direction;
 			moveToNextTile = true;
+			
+			
 		}
 	}
 	

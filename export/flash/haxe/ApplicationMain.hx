@@ -246,7 +246,7 @@ class ApplicationMain {
 		
 		config = {
 			
-			build: "765",
+			build: "777",
 			company: "HaxeFlixel",
 			file: "TurnBasedRPG",
 			fps: 60,
